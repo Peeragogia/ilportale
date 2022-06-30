@@ -240,7 +240,7 @@ function centerContent()
           height: '100%',
           width: '100%',			
           playerVars: { 'rel':0 , 'autoplay': 1, 'loop':1, 'controls':0, 'start':0, 'autohide':1,'wmode':'opaque','hd':1 },
-          videoId: '0ipKKb8Ytwg',
+          videoId: '692G7_j8wyE',
           events: {
             'onReady': onPlayerReady,
 			'onStateChange': onPlayerStateChange}
@@ -335,7 +335,7 @@ var clock;
 	var currentDate = new Date();
 
 	// Set some date in the future. In this case, it's always Jan 1
-	futureDate = new Date("May 07, 2030 23:00:00")
+	futureDate = new Date("May 07, 2023 23:00:00")
 
 	// Calculate the difference in seconds between the future and current date
 	var diff = futureDate.getTime() / 1000 - currentDate.getTime() / 1000;
