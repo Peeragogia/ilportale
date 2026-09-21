@@ -9,7 +9,7 @@ services:
       - PUID=1000
       - PGID=1000
       - CUSTOM_USER=admin
-      - PASSWORD=changeme_in_coolify
+      # PASSWORD impostata via Environment Variables di Coolify
     expose:
       - 3000
     labels:
