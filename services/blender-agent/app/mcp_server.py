@@ -162,8 +162,8 @@ def apply_script(
 
 # ─── ASGI entrypoint (per uvicorn) ────────────────────
 
-# MCPServer expone un'app Starlette pronta per uvicorn
-mcp_app = mcp.get_asgi_app()
+# MCPServer expone un'app Starlette per Streamable HTTP
+mcp_app = mcp.streamable_http_app()
 
 
 def main():

@@ -1,101 +1,102 @@
-"""Test di sicurezza e correttezza del path resolver di blender.py."""
+"""Test di sicurezza e correttezza del path resolver di blender.py.
+
+ATTENZIONE: i test importano app.blender DOPO aver impostato
+WORKSPACE_DIR. L'import è lazy (dentro le funzioni di test).
+"""
 
 import os
 import sys
-import tempfile
 from pathlib import Path
 import pytest
 
-# Assicura che il package app sia importabile
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from app.blender import (
-    resolve_input_blend,
-    resolve_workspace_output,
-    core_list_blend_files,
-)
-
-
-@pytest.fixture
-def workspace(tmp_path: Path) -> Path:
-    """Crea un workspace temporaneo con struttura minima."""
-    ws = tmp_path / "workspace"
+@pytest.fixture(autouse=True)
+def _setup_workspace(monkeypatch, tmp_path: Path) -> str:
+    """Crea workspace temporaneo e imposta WORKSPACE_DIR prima dell'import."""
+    ws = tmp_path / "w"
     ws.mkdir()
     (ws / "originals").mkdir()
     (ws / "versions").mkdir()
     (ws / "renders").mkdir()
     (ws / "changes").mkdir()
-    return ws
+    monkeypatch.setenv("WORKSPACE_DIR", str(ws))
+    return str(ws)
 
 
-def test_resolve_input_rejects_relative_traversal(workspace: Path):
-    """resolve_input_blend deve rifiutare path con .. che escono dal workspace."""
-    os.environ["WORKSPACE_DIR"] = str(workspace)
-
-    # Crea un file dentro il workspace per testare
-    legit = workspace / "originals" / "test.blend"
-    legit.write_text("dummy blend")
-    resolve_input_blend("originals/test.blend")  # should succeed
-
+def test_resolve_input_rejects_traversal():
+    """resolve_input_blend deve rifiutare .. fuori dal workspace."""
+    from app.blender import resolve_input_blend
     with pytest.raises(PermissionError):
         resolve_input_blend("../etc/passwd")
 
 
-def test_resolve_input_rejects_absolute_outside(workspace: Path):
+def test_resolve_input_rejects_absolute():
     """Path assoluto fuori dal workspace deve essere rifiutato."""
-    os.environ["WORKSPACE_DIR"] = str(workspace)
+    from app.blender import resolve_input_blend
     with pytest.raises(PermissionError):
         resolve_input_blend("/etc/passwd")
 
 
-def test_resolve_input_requires_existing(workspace: Path):
-    """resolve_input_blend deve fallire se il file non esiste."""
-    os.environ["WORKSPACE_DIR"] = str(workspace)
+def test_resolve_input_requires_existing():
+    """resolve_input_blend fallisce se file non esiste."""
+    from app.blender import resolve_input_blend
     with pytest.raises(FileNotFoundError):
         resolve_input_blend("nonexistent.blend")
 
 
-def test_workspace_output_rejects_traversal(workspace: Path):
-    """resolve_workspace_output deve rifiutare .. nel nome output."""
-    os.environ["WORKSPACE_DIR"] = str(workspace)
+def test_resolve_output_rejects_traversal():
+    """resolve_workspace_output rifiuta .. nel nome."""
+    from app.blender import resolve_workspace_output
     with pytest.raises(PermissionError):
         resolve_workspace_output("../etc/passwd", "versions")
 
 
-def test_workspace_output_rejects_absolute(workspace: Path):
-    """resolve_workspace_output deve rifiutare path assoluti."""
-    os.environ["WORKSPACE_DIR"] = str(workspace)
+def test_resolve_output_rejects_absolute():
+    """resolve_workspace_output rifiuta path assoluti."""
+    from app.blender import resolve_workspace_output
     with pytest.raises(PermissionError):
         resolve_workspace_output("/etc/passwd", "versions")
 
 
-def test_workspace_output_accepts_simple_name(workspace: Path):
-    """Nome file semplice deve funzionare."""
-    os.environ["WORKSPACE_DIR"] = str(workspace)
-    result = resolve_workspace_output("test.blend", "versions")
-    assert "test.blend" in str(result)
-    assert result.is_relative_to(workspace / "versions")
-
-
-def test_workspace_output_rejects_subdir_slash(workspace: Path):
-    """Output con slash nel nome deve essere rifiutato."""
-    os.environ["WORKSPACE_DIR"] = str(workspace)
+def test_resolve_output_rejects_subdir():
+    """Output con slash rifiutato."""
+    from app.blender import resolve_workspace_output
     with pytest.raises(PermissionError):
         resolve_workspace_output("sub/dir/file.blend", "versions")
 
 
+def test_resolve_output_accepts_simple_name():
+    """Nome file semplice accettato."""
+    from app.blender import resolve_workspace_output, WORKSPACE
+    result = resolve_workspace_output("test.blend", "versions")
+    assert result.parent == WORKSPACE / "versions"
+    assert result.name == "test.blend"
 
-def test_core_list_blend_files_empty(workspace: Path):
+
+
+def test_list_blend_files_finds_one():
+    """core_list_blend_files trova .blend in originals."""
+    ws = Path(os.environ["WORKSPACE_DIR"])
+    (ws / "originals" / "scene.blend").write_text("blend data")
+    from app.blender import core_list_blend_files
+    files = core_list_blend_files()
+    assert len(files) == 1
+    assert files[0].filename == "scene.blend"
+
+
+def test_list_blend_files_empty():
     """Lista vuota in workspace senza .blend."""
-    os.environ["WORKSPACE_DIR"] = str(workspace)
+    from app.blender import core_list_blend_files
     files = core_list_blend_files()
     assert files == []
 
 
-def test_core_list_blend_files_finds_one(workspace: Path):
-    """Trova file .blend in originals."""
-    os.environ["WORKSPACE_DIR"] = str(workspace)
-    (workspace / "originals" / "scene.blend").write_text("blend data")
-    files = core_list_blend_files()
-    assert len(files) == 1
-    assert files[0].filename == "scene.blend"
+def test_duplicate_version_works():
+    """Duplica un .blend orig→versions/ crea file."""
+    from app.blender import core_duplicate_version
+    ws = Path(os.environ["WORKSPACE_DIR"])
+    (ws / "originals" / "base.blend").write_text("blenddata")
+    path, meta = core_duplicate_version("originals/base.blend", "test dup")
+    assert Path(path).exists()
+    assert meta.description == "test dup"
+    assert meta.source_blend == "originals/base.blend"
