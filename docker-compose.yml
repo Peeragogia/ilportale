@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   blender:
     image: lscr.io/linuxserver/blender:latest
@@ -9,21 +7,11 @@ services:
       - PUID=1000
       - PGID=1000
       - USER=admin
-      - PASSWORD=
     ports:
-      - "3000:3000"      # Blender web GUI
+      - 3000:3000
     volumes:
-      - config:/config
       - workspace:/workspace
     restart: unless-stopped
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-    cap_add:
-      - SYS_ADMIN    # Required by linuxserver/blender for DBus/audio
-    networks:
-      - ilportale-net
 
   blender-agent:
     image: ttl.sh/peeragogia/il-portale-agent:latest
@@ -33,22 +21,12 @@ services:
       - API_PORT=8100
       - MCP_PORT=8200
       - WORKSPACE_DIR=/workspace
-      - BLENDER_HEADLESS_CMD=blender --background
     ports:
-      - "8100:8100"    # HTTP API
-      - "8200:8200"    # MCP Streamable HTTP
+      - 8100:8100
+      - 8200:8200
     volumes:
       - workspace:/workspace
     restart: unless-stopped
-    depends_on:
-      - blender
-    networks:
-      - ilportale-net
 
 volumes:
-  config:
   workspace:
-
-networks:
-  ilportale-net:
-    driver: bridge
