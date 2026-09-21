@@ -1,4 +1,4 @@
-name: Build & Push blender-agent
+name: Build & Push il-portale
 
 on:
   push:
@@ -6,6 +6,8 @@ on:
     paths:
       - "services/blender-agent/**"
       - "docker-compose.yml"
+      - "Dockerfile"
+      - "docker-entrypoint.sh"
       - ".github/workflows/build.yml"
 
 jobs:
@@ -18,12 +20,12 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push to ttl.sh (anonymous)
+      - name: Build and push to ttl.sh
         uses: docker/build-push-action@v6
         with:
-          context: ./services/blender-agent
-          file: ./services/blender-agent/Dockerfile
+          context: .
+          file: ./Dockerfile
           push: true
           tags: |
-            ttl.sh/peeragogia/il-portale-agent:latest
-            ttl.sh/peeragogia/il-portale-agent:${{ github.sha }}
+            ttl.sh/peeragogia/il-portale:latest
+            ttl.sh/peeragogia/il-portale:${{ github.sha }}

@@ -1,35 +1,26 @@
 services:
-  blender:
-    image: lscr.io/linuxserver/blender:latest
-    container_name: ilportale-blender
+  il-portale:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: il-portale
     environment:
       - TZ=Europe/Rome
       - PUID=1000
       - PGID=1000
       - USER=admin
+      - API_PORT=8100
+      - MCP_PORT=8200
     ports:
-      - 3000:3000
+      - 3000:3000    # Blender web GUI
+      - 8100:8100    # HTTP API backend
+      - 8200:8200    # MCP server
     volumes:
       - config:/config
       - workspace:/workspace
     restart: unless-stopped
     cap_add:
       - SYS_ADMIN
-
-  blender-agent:
-    image: ttl.sh/peeragogia/il-portale-agent:latest
-    container_name: ilportale-agent
-    environment:
-      - TZ=Europe/Rome
-      - API_PORT=8100
-      - MCP_PORT=8200
-      - WORKSPACE_DIR=/workspace
-    ports:
-      - 8100:8100
-      - 8200:8200
-    volumes:
-      - workspace:/workspace
-    restart: unless-stopped
 
 volumes:
   config:
