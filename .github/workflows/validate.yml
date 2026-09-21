@@ -1,0 +1,50 @@
+name: Validate
+
+on:
+  push:
+    branches: [master, feat/blender-ai-stack]
+  pull_request:
+
+jobs:
+  validate-compose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate docker-compose.yml
+        run: docker compose config
+
+  validate-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r services/blender-agent/requirements.txt
+          pip install pytest
+
+      - name: Syntax check
+        run: |
+          python -m py_compile services/blender-agent/app/__init__.py
+          python -m py_compile services/blender-agent/app/models.py
+          python -m py_compile services/blender-agent/app/blender.py
+          python -m py_compile services/blender-agent/app/api.py
+          python -m py_compile services/blender-agent/app/mcp_server.py
+
+      - name: Test models import
+        run: |
+          cd services/blender-agent
+          python -c "
+from app.models import (
+    BlendFileInfo, ObjectInfo, ObjectType,
+    SceneInfo, VersionMetadata, RenderRequest,
+    ChangeScript, BlenderCommand,
+)
+print('Models imported OK')
+# Test types
+print('ObjectType members:', [t.value for t in ObjectType])
+"

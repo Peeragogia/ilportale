@@ -1,0 +1,41 @@
+# ─── Blender workspace ─────────────────────────────────
+workspace/originals/*
+!workspace/originals/.gitkeep
+workspace/versions/*
+!workspace/versions/.gitkeep
+workspace/renders/*
+!workspace/renders/.gitkeep
+workspace/changes/*
+!workspace/changes/.gitkeep
+
+*.blend
+*.blend1
+*.blend2
+
+# ─── Output / runtime ─────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.log
+*.pid
+
+# ─── Config runtime ────────────────────────────────────
+config/
+!config/.gitkeep
+
+# ─── Environment ───────────────────────────────────────
+.env
+!.env.example
+
+# ─── OS ────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# ─── Render artifacts ──────────────────────────────────
+*.png
+*.jpg
+*.jpeg
+*.exr
+!workspace/renders/.gitkeep
