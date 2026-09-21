@@ -10,8 +10,11 @@ services:
     ports:
       - 3000:3000
     volumes:
+      - config:/config
       - workspace:/workspace
     restart: unless-stopped
+    cap_add:
+      - SYS_ADMIN
 
   blender-agent:
     image: ttl.sh/peeragogia/il-portale-agent:latest
@@ -29,4 +32,5 @@ services:
     restart: unless-stopped
 
 volumes:
+  config:
   workspace:
