@@ -26,7 +26,7 @@ services:
       - ilportale-net
 
   blender-agent:
-    image: ghcr.io/peeragogia/il-portale-agent:latest
+    image: ttl.sh/peeragogia/il-portale-agent:latest
     container_name: ilportale-agent
     environment:
       - TZ=Europe/Rome
