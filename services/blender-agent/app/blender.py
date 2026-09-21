@@ -71,7 +71,7 @@ def resolve_workspace_output(relative_or_absolute: str, subdir: str = "versions"
     """
     Risolve un path di output e lo confina in workspace/<subdir>/.
     Il file PUÒ non esistere ancora (verrà creato).
-    Rifiuta path con '..', slash, o path assoluti esterni.
+    Rifiuta path con '..', slash, o path assoluti.
 
     subdir: "versions" | "renders"
     """
@@ -81,9 +81,13 @@ def resolve_workspace_output(relative_or_absolute: str, subdir: str = "versions"
     if ".." in p.parts:
         raise PermissionError(f"Path traversal rifiutato: {relative_or_absolute}")
 
-    # Solo nome file, senza slash
+    # Rifiuta path assoluti
     if p.is_absolute():
         raise PermissionError(f"Path assoluto non permesso per output: {relative_or_absolute}")
+
+    # Rifiuta path con componenti multipli (solo nome file)
+    if len(p.parts) > 1:
+        raise PermissionError(f"Output con sottodirectory non permesso: {relative_or_absolute}")
 
     allowed = {"versions": VERSIONS_DIR, "renders": RENDERS_DIR}
     base = allowed.get(subdir)
