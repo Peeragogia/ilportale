@@ -2,6 +2,8 @@ services:
   blender:
     image: ttl.sh/peeragogia/il-portale:latest
     container_name: ilportale-blender
+    networks:
+      - coolify
     environment:
       - TZ=Europe/Rome
       - PUID=1000
@@ -10,6 +12,12 @@ services:
       - PASSWORD=changeme_in_coolify
     expose:
       - 3000
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.blender.rule=Host(`blender.pyragogy.org`)
+      - traefik.http.routers.blender.entrypoints=websecure
+      - traefik.http.routers.blender.tls=true
+      - traefik.http.services.blender.loadbalancer.server.port=3000
     volumes:
       - config:/config
       - workspace:/workspace
@@ -48,3 +56,7 @@ services:
 volumes:
   config:
   workspace:
+
+networks:
+  coolify:
+    external: true
