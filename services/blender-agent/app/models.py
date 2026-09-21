@@ -7,6 +7,7 @@ Tutti i tipi usati da API e MCP condividono queste definizioni.
 from pydantic import BaseModel, Field
 from typing import Optional
 from enum import Enum
+from datetime import datetime, timezone
 
 
 class BlendFileInfo(BaseModel):
@@ -58,8 +59,21 @@ class VersionMetadata(BaseModel):
     version_id: str
     source_blend: str
     script_path: Optional[str] = None
+    script_sha256: Optional[str] = None
     description: str = ""
     created_iso: str = ""
+
+
+class ChangeRecord(BaseModel):
+    """Audit trail per ogni modifica applicata a un .blend."""
+    version_id: str
+    source: str
+    output: str
+    description: str
+    script_sha256: str
+    timestamp_utc: str = Field(
+        default_factory=lambda: datetime.now(timezone.utc).isoformat()
+    )
 
 
 class RenderRequest(BaseModel):

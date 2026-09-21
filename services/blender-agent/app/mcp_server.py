@@ -1,58 +1,38 @@
 """
-Server MCP — espone gli strumenti Blender via Model Context Protocol
-in modalità Streamable HTTP.
+Server MCP — espone strumenti Blender via Model Context Protocol
+in modalità Streamable HTTP (MCP SDK v2).
 
-L'SDK MCP ufficiale fornisce già ASGI compatibility.
-Montiamo l'app FastMCP su una route e la esponiamo via uvicorn.
+Avviabile come processo standalone su MCP_PORT (default 8200).
 """
 
 import os
 import json
 from pathlib import Path
-from mcp.server.fastmcp import FastMCP
-from mcp.server.models import InitializationOptions
+
+from mcp.server import MCPServer
 
 from app.blender import (
-    list_blend_files,
-    inspect_scene,
-    duplicate_version,
-    render_preview,
-    apply_blender_script as core_apply_script,
+    core_list_blend_files as _list_blend_files,
+    core_inspect_scene as _inspect_scene,
+    core_duplicate_version as _duplicate_version,
+    core_render_preview as _render_preview,
+    core_apply_blender_script as _apply_script,
 )
 
 
 # ─── MCP Server setup ─────────────────────────────────
 
-mcp = FastMCP(
-    "ilportale-blender",
+mcp = MCPServer(
+    name="ilportale-blender",
     instructions=(
-        "Strumenti per interrogare e modificare file Blender (.blend) "
+        "Strumenti per interrogare file Blender (.blend) "
         "all'interno del workspace di Il Portale. "
         "Tutte le operazioni sono non-distruttive sugli originali. "
-        "Il workspace è /workspace."
+        "Il workspace è /workspace.\n\n"
+        "Per il milestone 0.1 sono disponibili: list, inspect, render, duplicate.\n"
+        "apply_script è disponibile solo se ENABLE_RAW_PYTHON è true."
     ),
 )
-
-
-# ─── Helpers ───────────────────────────────────────────
-
-
-def _run_blender_script(script_path: str, blend_path: str, *args: str) -> str:
-    """Esegue Blender headless con uno script e argomenti aggiuntivi."""
-    import subprocess
-    import tempfile
-
-    resolved_blend = blend_path  # assume già risolto in chiamante
-
-    if args:
-        cmd = f"blender --background {resolved_blend} --python {script_path} -- {' '.join(args)}"
-    else:
-        cmd = f"blender --background {resolved_blend} --python {script_path}"
-
-    result = subprocess.run(cmd, shell=True, capture_output=True, text=True, timeout=120)
-    if result.returncode != 0:
-        raise RuntimeError(f"Blender exit {result.returncode}: {result.stderr}")
-    return result.stdout
 
 
 # ─── Strumenti MCP ────────────────────────────────────
@@ -64,7 +44,7 @@ def list_blend_files() -> str:
     Elenca tutti i file .blend presenti nel workspace.
     Restituisce un array JSON con path, nome, dimensione e data modifica.
     """
-    files = list_blend_files()
+    files = _list_blend_files()
     return json.dumps([f.model_dump() for f in files], indent=2)
 
 
@@ -74,17 +54,11 @@ def inspect_blend(path: str) -> str:
     Ispeziona un file .blend e restituisce la struttura completa della scena.
     path: percorso relativo al workspace o assoluto (es. originals/file.blend)
     """
-    data = inspect_scene(path)
+    try:
+        data = _inspect_scene(path)
+    except (FileNotFoundError, PermissionError, RuntimeError) as e:
+        return json.dumps({"error": str(e)}, indent=2)
     return json.dumps(data, indent=2)
-
-
-@mcp.tool()
-def inspect_scene_tool(path: str) -> str:
-    """
-    Alias per inspect_blend. Ispeziona la scena di un file .blend.
-    Restituisce oggetti, materiali, camera, luci, statistiche.
-    """
-    return inspect_blend(path)
 
 
 @mcp.tool()
@@ -94,7 +68,10 @@ def inspect_object(path: str, object_name: str) -> str:
     path: percorso del .blend
     object_name: nome dell'oggetto (case-sensitive)
     """
-    data = inspect_scene(path)
+    try:
+        data = _inspect_scene(path)
+    except (FileNotFoundError, PermissionError, RuntimeError) as e:
+        return json.dumps({"error": str(e)}, indent=2)
     for obj in data.get("objects", []):
         if obj["name"] == object_name:
             return json.dumps(obj, indent=2)
@@ -102,7 +79,7 @@ def inspect_object(path: str, object_name: str) -> str:
 
 
 @mcp.tool()
-def duplicate_version_tool(
+def duplicate_version(
     source_path: str,
     description: str = "",
 ) -> str:
@@ -112,13 +89,16 @@ def duplicate_version_tool(
     description: descrizione della modifica
     Restituisce path della nuova versione e metadati.
     """
-    path, meta = duplicate_version(source_path, description)
+    try:
+        path, meta = _duplicate_version(source_path, description)
+    except (FileNotFoundError, PermissionError, RuntimeError) as e:
+        return json.dumps({"error": str(e)}, indent=2)
     result = {"path": path, "metadata": meta.model_dump()}
     return json.dumps(result, indent=2)
 
 
 @mcp.tool()
-def render_preview_tool(
+def render_preview(
     blend_path: str,
     resolution_x: int = 1920,
     resolution_y: int = 1080,
@@ -127,72 +107,62 @@ def render_preview_tool(
 ) -> str:
     """
     Genera un render preview di un file .blend.
-    Restituisce il path dell'immagine renderizzata.
+    Restituisce il path dell'immagine renderizzata (sempre in workspace/renders/).
     """
-    output = f"/workspace/renders/preview_{Path(blend_path).stem}_f{frame:04d}.png"
-    result = render_preview(
-        blend_path=blend_path,
-        output_path=output,
-        resolution_x=resolution_x,
-        resolution_y=resolution_y,
-        samples=samples,
-        frame=frame,
-    )
+    try:
+        output_name = f"preview_{Path(blend_path).stem}_f{frame:04d}.png"
+        result = _render_preview(
+            blend_path=blend_path,
+            output_name=output_name,
+            resolution_x=resolution_x,
+            resolution_y=resolution_y,
+            samples=samples,
+            frame=frame,
+        )
+    except (FileNotFoundError, PermissionError, RuntimeError) as e:
+        return json.dumps({"error": str(e)}, indent=2)
     return json.dumps({"status": "ok", "output": result}, indent=2)
 
 
 @mcp.tool()
-def apply_blender_script_tool(
+def apply_script(
     blend_path: str,
     script_content: str,
-    output_name: str = "",
+    description: str = "",
 ) -> str:
     """
-    APPLICA UNO SCRIPT PYTHON A UN FILE .BLEND — OPERAZIONE SENSIBILE.
+    [GATED] Applica uno script Python arbitrario a un file .blend.
 
-    Esegue script_content come codice Blender Python (bpy) su blend_path
-    e salva il risultato come nuova versione.
+    Crea una nuova versione in workspace/versions/ e registra l'audit trail
+    in workspace/changes/.
+    Disponibile solo se ENABLE_RAW_PYTHON=true.
 
     blend_path: percorso del .blend di input
     script_content: codice Python da eseguire (usa bpy per modificare la scena)
-    output_name: nome opzionale per l'output (default: auto-versionato)
-
-    Non può sovrascrivere file fuori dal workspace.
-    Lo script riceve blend_input e blend_output come variabili.
+    description: descrizione della modifica
     """
-    import tempfile
+    try:
+        output_path, change_record = _apply_script(
+            blend_path=blend_path,
+            script_content=script_content,
+            description=description,
+        )
+    except (PermissionError, FileNotFoundError, RuntimeError) as e:
+        return json.dumps({"error": str(e)}, indent=2)
 
-    from app.blender import resolve_blend
-
-    # Determina output
-    versions_dir = Path(os.environ.get("WORKSPACE_DIR", "/workspace")) / "versions"
-    versions_dir.mkdir(parents=True, exist_ok=True)
-
-    if not output_name:
-        existing = sorted(versions_dir.glob("[0-9][0-9][0-9][0-9].blend"))
-        next_num = 1
-        if existing:
-            last = int(existing[-1].stem)
-            next_num = last + 1
-        output_name = f"{next_num:04d}.blend"
-
-    output_path = str(versions_dir / output_name)
-
-    # Validazione path sicurezza (tramite core resolve)
-    resolved_output = resolve_blend(output_path)
-
-    result = core_apply_script(
-        blend_path=blend_path,
-        script_content=script_content,
-        output_path=output_path,
+    return json.dumps(
+        {
+            "status": "ok",
+            "output": output_path,
+            "change": change_record.model_dump(),
+        },
+        indent=2,
     )
 
-    return json.dumps({"status": "ok", "output": result}, indent=2)
 
+# ─── ASGI entrypoint (per uvicorn) ────────────────────
 
-# ─── ASGI entrypoint ──────────────────────────────────
-
-# FastMCP espone già un'app ASGI pronta per uvicorn
+# MCPServer expone un'app Starlette pronta per uvicorn
 mcp_app = mcp.get_asgi_app()
 
 

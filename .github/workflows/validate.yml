@@ -2,7 +2,7 @@ name: Validate
 
 on:
   push:
-    branches: [master, feat/blender-ai-stack]
+    branches: [master, feat/blender-ai-stack, fix/review-p0]
   pull_request:
 
 jobs:
@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Validate docker-compose.yml
         run: docker compose config
 
@@ -29,22 +28,46 @@ jobs:
 
       - name: Syntax check
         run: |
-          python -m py_compile services/blender-agent/app/__init__.py
           python -m py_compile services/blender-agent/app/models.py
           python -m py_compile services/blender-agent/app/blender.py
           python -m py_compile services/blender-agent/app/api.py
           python -m py_compile services/blender-agent/app/mcp_server.py
 
-      - name: Test models import
+      - name: Import smoke tests
+        working-directory: services/blender-agent
         run: |
-          cd services/blender-agent
+          echo "=== Testing models import ==="
           python -c "
-from app.models import (
-    BlendFileInfo, ObjectInfo, ObjectType,
-    SceneInfo, VersionMetadata, RenderRequest,
-    ChangeScript, BlenderCommand,
-)
-print('Models imported OK')
-# Test types
-print('ObjectType members:', [t.value for t in ObjectType])
+from app.models import BlendFileInfo, ObjectInfo, ObjectType
+from app.models import SceneInfo, VersionMetadata, ChangeRecord
+from app.models import RenderRequest, ChangeScript, BlenderCommand
+print('Models OK — type members:', [t.value for t in ObjectType])
 "
+
+          echo "=== Testing blender.py import ==="
+          python -c "
+from app.blender import core_list_blend_files, core_inspect_scene
+from app.blender import core_duplicate_version, core_render_preview
+from app.blender import core_apply_blender_script
+from app.blender import resolve_input_blend, resolve_workspace_output
+print('Blender core imported OK')
+"
+
+          echo "=== Testing MCP server v2 import ==="
+          python -c "
+from app.mcp_server import mcp, mcp_app
+print('MCP server (v2 SDK) imported OK')
+print('Type:', type(mcp).__module__ + '.' + type(mcp).__name__)
+"
+
+          echo "=== Testing API import ==="
+          python -c "
+from app.api import app
+print('FastAPI app imported OK')
+for r in app.routes:
+    print(f'  route: {r.path} [{r.methods}]')
+"
+
+      - name: Path safety tests (pytest)
+        working-directory: services/blender-agent
+        run: python -m pytest tests/ -xvs

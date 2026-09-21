@@ -1,26 +1,49 @@
 services:
-  il-portale:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: il-portale
+  blender:
+    image: ttl.sh/peeragogia/il-portale:latest
+    container_name: ilportale-blender
     environment:
       - TZ=Europe/Rome
       - PUID=1000
       - PGID=1000
-      - USER=admin
-      - API_PORT=8100
-      - MCP_PORT=8200
-    ports:
-      - 3000:3000    # Blender web GUI
-      - 8100:8100    # HTTP API backend
-      - 8200:8200    # MCP server
+      - CUSTOM_USER=admin
+      - PASSWORD=
+    expose:
+      - 3000
     volumes:
       - config:/config
       - workspace:/workspace
     restart: unless-stopped
-    cap_add:
-      - SYS_ADMIN
+
+  blender-api:
+    image: ttl.sh/peeragogia/il-portale:latest
+    container_name: ilportale-api
+    environment:
+      - TZ=Europe/Rome
+      - API_PORT=8100
+      - WORKSPACE_DIR=/workspace
+      - ENABLE_RAW_PYTHON=false
+    command: ["/venv/bin/python", "-m", "app.api"]
+    expose:
+      - 8100
+    volumes:
+      - workspace:/workspace
+    restart: unless-stopped
+
+  blender-mcp:
+    image: ttl.sh/peeragogia/il-portale:latest
+    container_name: ilportale-mcp
+    environment:
+      - TZ=Europe/Rome
+      - MCP_PORT=8200
+      - WORKSPACE_DIR=/workspace
+      - ENABLE_RAW_PYTHON=false
+    command: ["/venv/bin/python", "-m", "app.mcp_server"]
+    expose:
+      - 8200
+    volumes:
+      - workspace:/workspace
+    restart: unless-stopped
 
 volumes:
   config:

@@ -23,6 +23,5 @@ EXPOSE 3000 8100 8200
 COPY docker-entrypoint.sh /opt/start-backend.sh
 RUN chmod +x /opt/start-backend.sh
 
-# CMD wrapper: avvia backend poi /init (l'entrypoint originale di linuxserver)
-# Sovrascriviamo CMD (non ENTRYPOINT) per mantenere l'init di linuxserver
+# Default CMD: avvia backend + Blender GUI (per sviluppo)
 CMD ["/opt/start-backend.sh"]

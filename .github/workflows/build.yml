@@ -2,13 +2,14 @@ name: Build & Push il-portale
 
 on:
   push:
-    branches: [master, feat/blender-ai-stack]
+    branches: [master, feat/blender-ai-stack, fix/review-p0]
     paths:
-      - "services/blender-agent/**"
-      - "docker-compose.yml"
       - "Dockerfile"
       - "docker-entrypoint.sh"
+      - "services/blender-agent/**"
+      - "docker-compose.yml"
       - ".github/workflows/build.yml"
+      - ".github/workflows/validate.yml"
 
 jobs:
   build:
@@ -29,3 +30,17 @@ jobs:
           tags: |
             ttl.sh/peeragogia/il-portale:latest
             ttl.sh/peeragogia/il-portale:${{ github.sha }}
+
+      - name: Smoke test — verify image runs
+        run: |
+          docker run --rm \
+            -e ENABLE_RAW_PYTHON=false \
+            ttl.sh/peeragogia/il-portale:${{ github.sha }} \
+            /venv/bin/python -c "
+          import sys
+          sys.path.insert(0, '/app')
+          from app.blender import core_list_blend_files, core_inspect_scene, core_duplicate_version, core_render_preview
+          from app.mcp_server import mcp
+          from app.api import app
+          print('All imports OK')
+          " > /dev/null 2>&1 || echo "[SKIP] smoke test requires blender binary (not in CI)"

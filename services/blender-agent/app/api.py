@@ -1,62 +1,34 @@
 """
-FastAPI HTTP entrypoint.
+FastAPI HTTP entrypoint per Il Portale — Blender Agent API.
 
-Espone:
-- API REST su porta API_PORT (default 8100)
-- Lancia MCP server su thread separato su porta MCP_PORT (default 8200)
+Processo standalone, NON avvia più MCP (che è servizio separato).
+Espone API REST su API_PORT (default 8100).
 """
 
 import os
 import json
-import threading
+from pathlib import Path
 import uvicorn
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 
 from app.blender import (
-    list_blend_files,
-    inspect_scene,
-    render_preview,
-    duplicate_version,
-    apply_blender_script,
+    core_list_blend_files,
+    core_inspect_scene,
+    core_render_preview,
+    core_duplicate_version,
+    core_apply_blender_script,
 )
 from app.models import (
     RenderRequest,
     ChangeScript,
-    VersionMetadata,
 )
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Avvia MCP server su thread separato all'avvio."""
-    mcp_port = int(os.environ.get("MCP_PORT", "8200"))
-    t = threading.Thread(
-        target=_start_mcp,
-        args=(mcp_port,),
-        daemon=True,
-    )
-    t.start()
-    yield
 
 
 app = FastAPI(
     title="Il Portale — Blender Agent API",
     version="0.1.0",
-    lifespan=lifespan,
 )
-
-
-def _start_mcp(port: int):
-    """Lancia MCP server in modalità Streamable HTTP."""
-    from app.mcp_server import mcp_app
-    uvicorn.run(
-        mcp_app,
-        host="0.0.0.0",
-        port=port,
-        log_level="info",
-    )
 
 
 # ─── Health ────────────────────────────────────────────
@@ -64,7 +36,18 @@ def _start_mcp(port: int):
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "service": "blender-agent", "version": "0.1.0"}
+    return {
+        "status": "ok",
+        "service": "blender-api",
+        "version": "0.1.0",
+        "features": {
+            "list": True,
+            "inspect": True,
+            "render": True,
+            "duplicate": True,
+            "apply_script": os.environ.get("ENABLE_RAW_PYTHON", "false").lower() == "true",
+        },
+    }
 
 
 # ─── Files ─────────────────────────────────────────────
@@ -72,7 +55,7 @@ async def health():
 
 @app.get("/files")
 async def get_files():
-    files = list_blend_files()
+    files = core_list_blend_files()
     return {
         "count": len(files),
         "files": [f.model_dump() for f in files],
@@ -85,7 +68,7 @@ async def get_files():
 @app.get("/scene/{file:path}")
 async def get_scene(file: str):
     try:
-        data = inspect_scene(file)
+        data = core_inspect_scene(file)
         return {"file": file, "scene": data}
     except (FileNotFoundError, PermissionError, RuntimeError) as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -97,9 +80,10 @@ async def get_scene(file: str):
 @app.post("/render")
 async def post_render(req: RenderRequest):
     try:
-        output = render_preview(
+        output_name = f"preview_{Path(req.blend_path).stem}_{req.frame:04d}.png"
+        output = core_render_preview(
             blend_path=req.blend_path,
-            output_path=req.output_dir or f"/workspace/renders/preview_{req.blend_path.replace('/', '_')}.png",
+            output_name=output_name,
             resolution_x=req.resolution_x,
             resolution_y=req.resolution_y,
             samples=req.samples,
@@ -115,29 +99,83 @@ async def post_render(req: RenderRequest):
 
 @app.post("/versions")
 async def create_version(req: ChangeScript):
-    """Crea una nuova versione applicando uno script di modifica."""
+    """Crea una nuova versione duplicando e applicando uno script."""
     try:
-        # Prima crea versione di partenza
-        version_path, meta = duplicate_version(
-            source_path=req.source_blend,
-            description=req.description,
-        )
+        if req.script_content:
+            # Applica script (gated da ENABLE_RAW_PYTHON)
+            output_path, change_record = core_apply_blender_script(
+                blend_path=req.source_blend,
+                script_content=req.script_content,
+                description=req.description,
+            )
+            return {
+                "status": "ok",
+                "path": output_path,
+                "change": change_record.model_dump(),
+            }
+        else:
+            # Solo duplica
+            path, meta = core_duplicate_version(
+                source_path=req.source_blend,
+                description=req.description,
+            )
+            return {
+                "status": "ok",
+                "version": meta.version_id,
+                "path": path,
+                "metadata": meta.model_dump(),
+            }
+    except (FileNotFoundError, PermissionError, RuntimeError) as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
-        # Applica script sulla nuova versione
-        output = apply_blender_script(
-            blend_path=version_path,
-            script_content=req.script_content,
-            output_path=version_path,  # sovrascrive la copia
-        )
 
+@app.post("/versions/duplicate")
+async def duplicate(source_blend: str, description: str = ""):
+    """
+    Crea una copia versionata di un .blend senza applicare script.
+    Operazione sicura (non raw Python).
+    """
+    try:
+        path, meta = core_duplicate_version(
+            source_path=source_blend,
+            description=description,
+        )
         return {
             "status": "ok",
             "version": meta.version_id,
-            "path": output,
+            "path": path,
             "metadata": meta.model_dump(),
         }
     except (FileNotFoundError, PermissionError, RuntimeError) as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+# ─── Changes / Audit trail ────────────────────────────
+
+
+@app.get("/changes")
+async def list_changes():
+    """Elenca tutti i change record archiviati."""
+    changes_dir = Path(os.environ.get("WORKSPACE_DIR", "/workspace")) / "changes"
+    if not changes_dir.exists():
+        return {"count": 0, "changes": []}
+    records = []
+    for f in sorted(changes_dir.glob("*.json")):
+        records.append(json.loads(f.read_text()))
+    return {"count": len(records), "changes": records}
+
+
+@app.get("/changes/{change_id}")
+async def get_change(change_id: str):
+    """Restituisce il change record e lo script associato."""
+    changes_dir = Path(os.environ.get("WORKSPACE_DIR", "/workspace")) / "changes"
+    json_path = changes_dir / f"{change_id}.json"
+    py_path = changes_dir / f"{change_id}.py"
+    if not json_path.exists():
+        raise HTTPException(status_code=404, detail=f"Change {change_id} non trovato")
+    record = json.loads(json_path.read_text())
+    script = py_path.read_text() if py_path.exists() else None
+    return {"record": record, "script": script}
 
 
 # ─── Entrypoint ────────────────────────────────────────
@@ -154,4 +192,5 @@ def main():
 
 
 if __name__ == "__main__":
+    # Serve per il startup script
     main()

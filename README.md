@@ -15,49 +15,46 @@ git clone https://github.com/Peeragogia/ilportale.git
 cd ilportale
 
 # Copia env e configura
-cp [REDACTED SENSITIVE CONTEXT]example .env
+cp .env.example .env
 
-# Avvia
+# Avvia (3 servizi: blender GUI, API, MCP)
 docker compose up -d
 ```
 
 ## Servizi
 
-| Servizio       | Porta | URL                    | Descrizione                        |
-|---------------|-------|------------------------|------------------------------------|
-| Blender GUI   | 3000  | http://localhost:3000   | Interfaccia web Blender            |
-| API REST      | 8100  | http://localhost:8100   | Backend Python / health / files    |
-| MCP (AI)      | 8200  | http://localhost:8200   | Model Context Protocol per agenti  |
+| Servizio      | Porta (int.) | Descrizione                        |
+|---------------|-------------|------------------------------------|
+| Blender GUI   | 3000        | Interfaccia web Blender            |
+| API REST      | 8100        | Backend Python per operazioni file |
+| MCP (AI)      | 8200        | Model Context Protocol per agenti  |
 
 ## Health check
 
 ```bash
 curl http://localhost:8100/health
-# → {"status":"ok","service":"blender-agent","version":"0.1.0"}
+# → {"status":"ok","service":"blender-api","version":"0.1.0",...}
 ```
 
-## Stato attuale
+## Milestone 0.1 — operazioni supportate
 
-> **Milestone 0.1 in corso** — tubatura deterministica.
-> Vedi [ROADMAP.md](docs/ROADMAP.md) per dettagli.
+| Operazione      | API | MCP | Descrizione                            |
+|----------------|-----|-----|----------------------------------------|
+| list files     | ✅  | ✅  | Elenca file .blend nel workspace       |
+| inspect scene  | ✅  | ✅  | Ispeziona struttura scena (oggetti, materiali) |
+| render preview | ✅  | ✅  | Genera render da Blender headless      |
+| duplicate      | ✅  | ✅  | Crea copia versionata in versions/     |
+| apply script   | ⛔  | ⛔  | Disabilitato di default (vedi sotto)   |
 
-### ✅ Funziona
+**apply_script (raw Python)** è un RCE. Disabilitato per default con `ENABLE_RAW_PYTHON=false`.
+Per il milestone 0.1 bastano list/inspect/render/duplicate.
 
-- Struttura progetto completa
-- `docker-compose.yml` funzionante
-- API HTTP con endpoint /health, /files, /scene, /render, /versions
-- Server MCP con 7 strumenti
-- Versioning non-distruttivo
-- Validazione path sicurezza
-- Blender scripts (inspect, render, apply change)
-- CI pipeline (validate)
+## Audit trail
 
-### 🔧 Da testare su Coolify
-
-- Deploy end-to-end
-- Blender web funzionante via browser
-- MCP che risponde con struttura scena reale
-- Render headless funzionante
+Ogni modifica applicata crea:
+- `workspace/versions/NNNN.blend` — file versionato
+- `workspace/changes/NNNN.py` — script archiviato
+- `workspace/changes/NNNN.json` — metadati (source, output, sha256, timestamp)
 
 ## Documentazione
 

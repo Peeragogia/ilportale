@@ -5,73 +5,73 @@
 1. Vai su **Coolify Dashboard → Resources → New Resource → Private Repository (Git)**
 2. Connetti il tuo account GitHub / Git provider
 3. Seleziona `Peeragogia/ilportale`
-4. Seleziona il branch: `feat/blender-ai-stack`
+4. Seleziona il branch: `fix/review-p0`
 
 ## 2. Servizi nel docker-compose
 
-Il `docker-compose.yml` definisce due servizi pubblicabili:
+Il `docker-compose.yml` definisce **tre servizi** che condividono la stessa immagine:
 
-| Servizio        | Porta interna | Pubblica su |
-|----------------|---------------|-------------|
-| blender        | 3000          | Dominio A   |
-| blender-agent  | 8100          | Dominio B (API) |
-| blender-agent  | 8200          | Dominio C (MCP) |
+| Servizio      | Porta interna | Comando                         |
+|--------------|--------------|---------------------------------|
+| blender      | 3000         | Default (backend + /init GUI)   |
+| blender-api  | 8100         | `python -m app.api`             |
+| blender-mcp  | 8200         | `python -m app.mcp_server`      |
+
+Usano `expose:` (non `ports:`) — Coolify gestisce il routing via dominio.
 
 ## 3. Configurazione in Coolify
 
 Per ogni servizio:
 
 ### blender (GUI)
-
 - **Port**: 3000
-- **Dominio**: imposta un sottodominio con HTTPS (es. `blender.iltuodominio.it`)
+- **Dominio**: `blender.iltuodominio.it` (es.)
 - **Persistent volumes**:
-  - `/config` → volume persistente Coolify
-  - `/workspace` → volume persistente condiviso con blender-agent
+  - `/config` → volume persistente
+  - `/workspace` → volume persistente condiviso con API/MCP
 
-### blender-agent (API + MCP)
-
-- **Porte**: 8100 (API), 8200 (MCP)
-- **Dominio**: imposta due domini o usa path rewriting
+### blender-api (backend)
+- **Port**: 8100
+- **Dominio**: `api.iltuodominio.it` (es.) — **non esporre pubblicamente**
 - **Persistent volumes**: `/workspace` (stesso volume di blender)
 
-## 4. Variabili d'ambiente
+### blender-mcp (MCP agents)
+- **Port**: 8200
+- **Dominio**: `mcp.iltuodominio.it` (es.) — **non esporre pubblicamente**
+- **Persistent volumes**: `/workspace` (stesso volume)
 
-Imposta nel Coolify **Environment Variables** per ogni servizio:
+## 4. Variabili d'ambiente globali
 
 ```env
 TZ=Europe/Rome
 PUID=1000
 PGID=1000
-BLENDER_USER=admin
-BLENDER_PASSWORD=your_secure_password
-API_PORT=8100
-MCP_PORT=8200
+CUSTOM_USER=admin
+PASSWORD=your_secure_password
+WORKSPACE_DIR=/workspace
+ENABLE_RAW_PYTHON=false
 ```
 
 ## 5. Dominio e HTTPS
 
-1. Coolify gestisce automaticamente Let's Encrypt per i tuoi domini
-2. Per il MCP server (porta 8200): è un server HTTP semplice, per produzione
-   valuta di proteggerlo con **Basic Auth** o **API key** a monte
+1. Coolify gestisce automaticamente Let's Encrypt
+2. Per sicurezza: API e MCP su **rete interna** o dietro Basic Auth
+3. La GUI Blender contiene terminale: proteggere con password forte
 
 ## 6. Health check
 
-Dopo il deploy, verifica:
-
 ```bash
 curl https://api.iltuodominio.it/health
-# → {"status":"ok","service":"blender-agent","version":"0.1.0"}
+# → {"status":"ok","service":"blender-api","version":"0.1.0"}
 ```
 
 ## 7. Verifica Blender web
 
 Apri `https://blender.iltuodominio.it` nel browser.
-Dovresti vedere l'interfaccia Blender via web.
 
 ## Note importanti
 
-- **Blender non va esposto direttamente su Internet pubblica** senza protezione
-  aggiuntiva (password forte, IP whitelist, VPN). Vedi `SECURITY.md`.
-- I render generano output PNG: imposta un volume persistente per `./workspace/renders/`
-  se vuoi conservarli tra i deploy.
+- **Blender GUI, API e MCP non vanno esposti su Internet pubblica** senza
+  protezione. Vedi `SECURITY.md`.
+- I render vanno in `workspace/renders/`: volume persistente tra i deploy.
+- `ENABLE_RAW_PYTHON=false` per default: attiva solo se serve apply_script.
