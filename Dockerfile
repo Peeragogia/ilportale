@@ -23,5 +23,7 @@ EXPOSE 3000 8100 8200
 COPY docker-entrypoint.sh /opt/start-backend.sh
 RUN chmod +x /opt/start-backend.sh
 
-# Default CMD: avvia backend + Blender GUI (per sviluppo)
-CMD ["/opt/start-backend.sh"]
+# Sovrascrive ENTRYPOINT (linuxserver usa /init) per avviare backend + GUI
+# Per blender-api e blender-mcp, docker-compose command: bypassa questo
+# e lancia direttamente /venv/bin/python -m ... con ENTRYPOINT vuoto
+ENTRYPOINT ["/opt/start-backend.sh"]
