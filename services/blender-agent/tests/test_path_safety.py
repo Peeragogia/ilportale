@@ -67,9 +67,9 @@ def test_resolve_output_rejects_subdir():
 
 def test_resolve_output_accepts_simple_name():
     """Nome file semplice accettato."""
-    from app.blender import resolve_workspace_output, WORKSPACE
+    from app.blender import resolve_workspace_output, get_workspace
     result = resolve_workspace_output("test.blend", "versions")
-    assert result.parent == WORKSPACE / "versions"
+    assert result.parent == get_workspace() / "versions"
     assert result.name == "test.blend"
 
 

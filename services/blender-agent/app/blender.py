@@ -21,12 +21,44 @@ from app.models import (
 )
 
 
-WORKSPACE = Path(os.environ.get("WORKSPACE_DIR", "/workspace")).resolve()
-VERSIONS_DIR = WORKSPACE / "versions"
-RENDERS_DIR = WORKSPACE / "renders"
-CHANGES_DIR = WORKSPACE / "changes"
-ORIGINALS_DIR = WORKSPACE / "originals"
+WORKSPACE = None  # lazy, letto via get_workspace()
+VERSIONS_DIR = None
+RENDERS_DIR = None
+CHANGES_DIR = None
+ORIGINALS_DIR = None
 BLENDER_CMD = os.environ.get("BLENDER_HEADLESS_CMD", "blender")
+
+_WORKSPACE_CACHE = {}
+
+
+def get_workspace() -> Path:
+    """Restituisce il workspace path, leggendo WORKSPACE_DIR da environ.
+    Usa una cache che si invalida se l'env cambia."""
+    ws_str = os.environ.get("WORKSPACE_DIR", "/workspace")
+    cached = _WORKSPACE_CACHE.get("path")
+    cached_env = _WORKSPACE_CACHE.get("env")
+    if cached is not None and cached_env == ws_str:
+        return cached
+    p = Path(ws_str).resolve()
+    _WORKSPACE_CACHE["path"] = p
+    _WORKSPACE_CACHE["env"] = ws_str
+    return p
+
+
+def get_versions_dir() -> Path:
+    return get_workspace() / "versions"
+
+
+def get_renders_dir() -> Path:
+    return get_workspace() / "renders"
+
+
+def get_changes_dir() -> Path:
+    return get_workspace() / "changes"
+
+
+def get_originals_dir() -> Path:
+    return get_workspace() / "originals"
 
 
 # ─── Confini ───────────────────────────────────────────
@@ -35,7 +67,7 @@ BLENDER_CMD = os.environ.get("BLENDER_HEADLESS_CMD", "blender")
 def _lazy_ensure_dirs():
     """Tenta di creare le directory di lavoro. Non fallisce se /workspace
     non esiste (es. in CI senza mount del volume)."""
-    for d in (VERSIONS_DIR, RENDERS_DIR, CHANGES_DIR, ORIGINALS_DIR):
+    for d in (get_versions_dir(), get_renders_dir(), get_changes_dir(), get_originals_dir()):
         try:
             d.mkdir(parents=True, exist_ok=True)
         except PermissionError:
@@ -56,9 +88,9 @@ def resolve_input_blend(relative_or_absolute: str) -> Path:
     """
     p = Path(relative_or_absolute)
     if not p.is_absolute():
-        p = WORKSPACE / p
+        p = get_workspace() / p
     p = p.resolve()
-    if not p.is_relative_to(WORKSPACE):
+    if not p.is_relative_to(get_workspace()):
         raise PermissionError(
             f"Accesso negato: {relative_or_absolute} è fuori dal workspace"
         )
@@ -89,7 +121,7 @@ def resolve_workspace_output(relative_or_absolute: str, subdir: str = "versions"
     if len(p.parts) > 1:
         raise PermissionError(f"Output con sottodirectory non permesso: {relative_or_absolute}")
 
-    allowed = {"versions": VERSIONS_DIR, "renders": RENDERS_DIR}
+    allowed = {"versions": get_versions_dir(), "renders": get_renders_dir()}
     base = allowed.get(subdir)
     if base is None:
         raise ValueError(f"subdir deve essere 'versions' o 'renders', non {subdir}")
@@ -108,12 +140,12 @@ def resolve_workspace_output(relative_or_absolute: str, subdir: str = "versions"
 def core_list_blend_files() -> list[BlendFileInfo]:
     """Elenca tutti i file .blend nel workspace (ricorsivo)."""
     results: list[BlendFileInfo] = []
-    for f in sorted(WORKSPACE.rglob("*.blend")):
+    for f in sorted(get_workspace().rglob("*.blend")):
         if f.is_file():
             stat = f.stat()
             results.append(
                 BlendFileInfo(
-                    path=str(f.relative_to(WORKSPACE)),
+                    path=str(f.relative_to(get_workspace())),
                     filename=f.name,
                     size_bytes=stat.st_size,
                     modified_iso=datetime.fromtimestamp(
@@ -302,20 +334,20 @@ def core_duplicate_version(
     """
     resolved = resolve_input_blend(source_path)
 
-    existing = sorted(VERSIONS_DIR.glob("[0-9][0-9][0-9][0-9].blend"))
+    existing = sorted(get_versions_dir().glob("[0-9][0-9][0-9][0-9].blend"))
     next_num = 1
     if existing:
         last = int(existing[-1].stem)
         next_num = last + 1
 
     new_name = f"{next_num:04d}.blend"
-    new_path = VERSIONS_DIR / new_name
+    new_path = get_versions_dir() / new_name
 
     shutil.copy2(resolved, new_path)
 
     meta = VersionMetadata(
         version_id=new_name.replace(".blend", ""),
-        source_blend=str(resolved.relative_to(WORKSPACE)),
+        source_blend=str(resolved.relative_to(get_workspace())),
         description=description,
         created_iso=datetime.now(timezone.utc).isoformat(),
     )
@@ -373,7 +405,7 @@ def core_apply_blender_script(
 
     # Determina output name
     if output_name is None:
-        existing = sorted(VERSIONS_DIR.glob("[0-9][0-9][0-9][0-9].blend"))
+        existing = sorted(get_versions_dir().glob("[0-9][0-9][0-9][0-9].blend"))
         next_num = 1
         if existing:
             last = int(existing[-1].stem)
@@ -388,7 +420,7 @@ def core_apply_blender_script(
 
     # Scrivi lo script salvato in changes/ per audit
     change_id = output_name.replace(".blend", "")
-    script_archive = CHANGES_DIR / f"{change_id}.py"
+    script_archive = get_changes_dir() / f"{change_id}.py"
     script_archive.write_text(
         f"# Script applicato — {change_id}\n"
         f"# Source: {blend_path}\n"
@@ -419,12 +451,12 @@ def core_apply_blender_script(
     # Audit trail JSON
     change_record = ChangeRecord(
         version_id=change_id,
-        source=str(resolved_input.relative_to(WORKSPACE)),
-        output=str(resolved_output.relative_to(WORKSPACE)),
+        source=str(resolved_input.relative_to(get_workspace())),
+        output=str(resolved_output.relative_to(get_workspace())),
         description=description,
         script_sha256=script_sha256,
     )
-    json_path = CHANGES_DIR / f"{change_id}.json"
+    json_path = get_changes_dir() / f"{change_id}.json"
     json_path.write_text(change_record.model_dump_json(indent=2))
 
     return str(resolved_output), change_record
