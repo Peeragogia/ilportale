@@ -32,13 +32,18 @@ BLENDER_CMD = os.environ.get("BLENDER_HEADLESS_CMD", "blender")
 # ─── Confini ───────────────────────────────────────────
 
 
-def _ensure_dirs():
-    """Crea le directory di lavoro se non esistono."""
+def _lazy_ensure_dirs():
+    """Tenta di creare le directory di lavoro. Non fallisce se /workspace
+    non esiste (es. in CI senza mount del volume)."""
     for d in (VERSIONS_DIR, RENDERS_DIR, CHANGES_DIR, ORIGINALS_DIR):
-        d.mkdir(parents=True, exist_ok=True)
+        try:
+            d.mkdir(parents=True, exist_ok=True)
+        except PermissionError:
+            pass
 
 
-_ensure_dirs()
+# NOTA: chiamata all'import — non fallisce in CI
+_lazy_ensure_dirs()
 
 
 # ─── Path validation ───────────────────────────────────
