@@ -7,7 +7,7 @@ services:
       - PUID=1000
       - PGID=1000
       - CUSTOM_USER=admin
-      - PASSWORD=
+      - PASSWORD=changeme_in_coolify
     expose:
       - 3000
     volumes:
