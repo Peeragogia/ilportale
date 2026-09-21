@@ -1,15 +1,4 @@
-#!/bin/bash
-set -e
-
-# Avvia il backend Python in background
-echo "[entrypoint] Starting blender-agent backend..."
+#!/usr/bin/with-contenv bash
+# Avvia il backend Python per Il Portale
 cd /app
-/venv/bin/python -m app.api &
-API_PID=$!
-
-# Avvia Blender web (s6 init di linuxserver/blender)
-echo "[entrypoint] Starting Blender web UI..."
-/init
-
-# Se si arriva qui (es. /init termina), kill backend
-kill $API_PID 2>/dev/null || true
+/venv/bin/python -m app.api
