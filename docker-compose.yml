@@ -26,9 +26,7 @@ services:
       - ilportale-net
 
   blender-agent:
-    build:
-      context: ./services/blender-agent
-      dockerfile: Dockerfile
+    image: ghcr.io/peeragogia/il-portale-agent:latest
     container_name: ilportale-agent
     environment:
       - TZ=${TZ:-Europe/Rome}
