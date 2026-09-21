@@ -23,7 +23,6 @@ EXPOSE 3000 8100 8200
 COPY docker-entrypoint.sh /opt/start-backend.sh
 RUN chmod +x /opt/start-backend.sh
 
-# Usa s6-overlay service per avviare il backend prima di /init
-RUN echo "#!/usr/bin/with-contenv bash" > /etc/cont-init.d/99-backend && \
-    echo "/opt/start-backend.sh &" >> /etc/cont-init.d/99-backend && \
-    chmod +x /etc/cont-init.d/99-backend
+# CMD wrapper: avvia backend poi /init (l'entrypoint originale di linuxserver)
+# Sovrascriviamo CMD (non ENTRYPOINT) per mantenere l'init di linuxserver
+CMD ["/opt/start-backend.sh"]

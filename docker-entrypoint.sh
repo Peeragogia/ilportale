@@ -1,4 +1,10 @@
-#!/usr/bin/with-contenv bash
-# Avvia il backend Python per Il Portale
+#!/bin/bash
+set -e
+
+echo "[entrypoint] Starting backend..."
 cd /app
-/venv/bin/python -m app.api
+/venv/bin/python -m app.api &
+BACKEND_PID=$!
+
+echo "[entrypoint] Backend started (PID $BACKEND_PID). Starting Blender..."
+exec /init
