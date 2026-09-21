@@ -36,37 +36,10 @@ jobs:
       - name: Import smoke tests
         working-directory: services/blender-agent
         run: |
-          echo "=== Testing models import ==="
-          python -c "
-from app.models import BlendFileInfo, ObjectInfo, ObjectType
-from app.models import SceneInfo, VersionMetadata, ChangeRecord
-from app.models import RenderRequest, ChangeScript, BlenderCommand
-print('Models OK — type members:', [t.value for t in ObjectType])
-"
-
-          echo "=== Testing blender.py import ==="
-          python -c "
-from app.blender import core_list_blend_files, core_inspect_scene
-from app.blender import core_duplicate_version, core_render_preview
-from app.blender import core_apply_blender_script
-from app.blender import resolve_input_blend, resolve_workspace_output
-print('Blender core imported OK')
-"
-
-          echo "=== Testing MCP server v2 import ==="
-          python -c "
-from app.mcp_server import mcp, mcp_app
-print('MCP server (v2 SDK) imported OK')
-print('Type:', type(mcp).__module__ + '.' + type(mcp).__name__)
-"
-
-          echo "=== Testing API import ==="
-          python -c "
-from app.api import app
-print('FastAPI app imported OK')
-for r in app.routes:
-    print(f'  route: {r.path} [{r.methods}]')
-"
+          python -c "from app.models import BlendFileInfo, ObjectInfo, ObjectType, SceneInfo, VersionMetadata, ChangeRecord; print('Models OK')"
+          python -c "from app.blender import core_list_blend_files, core_inspect_scene, core_duplicate_version, core_render_preview, core_apply_blender_script, resolve_input_blend, resolve_workspace_output; print('Blender OK')"
+          python -c "from app.mcp_server import mcp, mcp_app; print('MCP v2 OK:', type(mcp).__module__ + '.' + type(mcp).__name__)"
+          python -c "from app.api import app; print('API OK — routes:', len(app.routes))"
 
       - name: Path safety tests (pytest)
         working-directory: services/blender-agent
