@@ -38,4 +38,4 @@ Thumbs.db
 *.jpg
 *.jpeg
 *.exr
-!workspace/renders/.gitkeep
+!workspace/renders/.gitkeep\n# ─── Deploy ──────────────────────────────────────\ndeploy-server.yml\n\n# ─── Test files ────────────────────────────────────\ntest_acceptance.py\ntest_render*.py

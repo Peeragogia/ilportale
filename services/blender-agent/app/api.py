@@ -3,7 +3,8 @@ FastAPI HTTP entrypoint per Il Portale — Blender Agent API.
 
 Espone:
 - API REST su API_PORT (default 8100) per i tool
-- Chat endpoint su /chat per l'agente NL
+- Chat endpoint su /chat per l'agente NL (regex fallback)
+- Tools endpoint /tools/* per chiamate dirette (per Pi)
 - Static chat UI su / (root)
 """
 
@@ -24,6 +25,7 @@ from app.blender import (
     core_render_preview,
     core_duplicate_version,
     core_apply_blender_script,
+    get_versions_dir,
 )
 from app.blender_tools import (
     core_list_objects,
@@ -42,9 +44,19 @@ from app.models import (
     ChangeScript,
 )
 from app.agent import Agent
+from app.state import (
+    get_state,
+    set_state,
+    get_all_state,
+    reset_state,
+    add_history,
+    get_history,
+    get_latest_blend,
+    init_db,
+)
 
 
-app = FastAPI(title="Il Portale — Blender Agent API", version="0.2.0")
+app = FastAPI(title="Il Portale — Blender Agent API", version="0.2.1")
 
 # Istanza agente (conversation context)
 agent = Agent()
@@ -86,6 +98,96 @@ class ChatRequest(BaseModel):
     message: str
 
 
+# ─── Nuovi modelli per /tools/* (Pi-friendly) ────────
+
+
+class ToolInspectRequest(BaseModel):
+    """Ispezione di un oggetto per nome."""
+    object_name: str
+    blend_path: Optional[str] = None  # auto-resolve se non specificato
+
+
+class ToolListRequest(BaseModel):
+    """Lista oggetti nella scena."""
+    blend_path: Optional[str] = None
+
+
+class ToolDuplicateRequest(BaseModel):
+    """Duplica un oggetto."""
+    object_name: str
+    new_name: Optional[str] = ""
+    blend_path: Optional[str] = None
+
+
+class ToolTransformRequest(BaseModel):
+    """Sposta, ruota, scala un oggetto."""
+    object_name: str
+    x: float = 0
+    y: float = 0
+    z: float = 0
+    relative: bool = True  # True = offset, False = assoluto
+    blend_path: Optional[str] = None
+
+
+class ToolRenderRequest(BaseModel):
+    """Render preview."""
+    blend_path: Optional[str] = None
+    frame: int = 1
+
+
+class ToolHideRequest(BaseModel):
+    """Nascondi/mostra oggetto."""
+    object_name: str
+    hidden: bool = True
+    blend_path: Optional[str] = None
+
+
+class ToolUndoRequest(BaseModel):
+    """Undo ultima modifica."""
+    blend_path: Optional[str] = None
+
+
+# ─── Helper ──────────────────────────────────────────
+
+
+def _resolve_blend(blend_path: Optional[str] = None) -> str:
+    """Resolve blend path: usa parametro o ultimo dal workspace."""
+    if blend_path:
+        return blend_path
+    return get_latest_blend()
+
+
+def _resolve_object(object_name: str, blend_path: str) -> Optional[str]:
+    """Risolve nome oggetto: exact → case-insensitive → fuzzy unico."""
+    try:
+        objects = core_list_objects(blend_path)
+        names = [o["name"] for o in objects]
+        
+        # Exact
+        if object_name in names:
+            return object_name
+        
+        # Case-insensitive
+        for n in names:
+            if n.lower() == object_name.lower():
+                return n
+        
+        # Fuzzy unico
+        candidates = [n for n in names if object_name.lower() in n.lower()]
+        if len(candidates) == 1:
+            return candidates[0]
+        
+        # Fuzzy multi-word
+        words = object_name.lower().split()
+        candidates = [n for n in names if all(w in n.lower() for w in words)]
+        if len(candidates) == 1:
+            return candidates[0]
+            
+    except Exception:
+        pass
+    return None
+
+
 # ─── Health ────────────────────────────────────────────
 
 
@@ -94,7 +196,7 @@ async def health():
     return {
         "status": "ok",
         "service": "blender-api",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "features": {
             "list": True,
             "inspect": True,
@@ -109,6 +211,7 @@ async def health():
             "agent": True,
             "undo": True,
             "apply_script": os.environ.get("ENABLE_RAW_PYTHON", "false").lower() == "true",
+            "persistent_state": True,
         },
     }
 
@@ -275,25 +378,25 @@ async def undo_last_change(blend_path: str):
     if len(versions) < 2:
         raise HTTPException(status_code=400,
                             detail="Nessuna versione precedente disponibile per undo")
-    # Prendi la penultima versione
     previous = versions[-2]
     current = versions[-1]
-    # Copia indietro
-    import shutil
-    resolved = resolve_input_blend(blend_path)  # solo per validazione path
-    # Sovrascrive il file corrente con la versione precedente
-    # Ma meglio: salviamo una nuova versione che è copia della penultima
     from app.blender import core_duplicate_version
     new_path, meta = core_duplicate_version(
         source_path=str(previous),
         description=f"Undo: ripristino versione {previous.stem}",
     )
+    
+    # Aggiorna stato persistente
+    set_state("current_blend", new_path)
+    set_state("last_change_id", meta.version_id)
+    
     return {
         "status": "ok",
         "message": f"Ripristinata versione {previous.stem} come {meta.version_id}",
         "previous_version": previous.stem,
         "new_version": meta.version_id,
         "path": new_path,
+        "current_blend": new_path,
     }
 
 
@@ -379,6 +482,374 @@ async def get_change(change_id: str):
     return {"record": record, "script": script}
 
 
+# ═══════════════════════════════════════════════════════
+#  /tools/* — endpoint semplificati per Pi (LLM agent)
+#  Non richiedono blend_path (auto-resolve da SQLite)
+# ═══════════════════════════════════════════════════════
+
+
+@app.post("/tools/inspect")
+async def tool_inspect(req: ToolInspectRequest):
+    """Ispeziona un oggetto nella scena corrente."""
+    blend_path = _resolve_blend(req.blend_path)
+    resolved_name = _resolve_object(req.object_name, blend_path)
+    
+    if not resolved_name:
+        return {
+            "status": "error",
+            "error": f"Oggetto '{req.object_name}' non trovato",
+            "available_objects": [o["name"] for o in core_list_objects(blend_path)][:30],
+        }
+    
+    obj = core_inspect_object_detail(blend_path, resolved_name)
+    
+    if "error" in obj:
+        return {"status": "error", "error": obj["error"]}
+    
+    # Persisti stato
+    set_state("last_referenced_object", resolved_name)
+    set_state("last_tool_call", "inspect")
+    set_state("current_blend", blend_path)
+    
+    return {
+        "status": "ok",
+        "object": obj,
+        "current_blend": blend_path,
+    }
+
+
+@app.post("/tools/list")
+async def tool_list(req: ToolListRequest):
+    """Elenca tutti gli oggetti nella scena corrente."""
+    blend_path = _resolve_blend(req.blend_path)
+    objects = core_list_objects(blend_path)
+    return {
+        "status": "ok",
+        "count": len(objects),
+        "objects": objects,
+        "current_blend": blend_path,
+    }
+
+
+@app.post("/tools/duplicate")
+async def tool_duplicate(req: ToolDuplicateRequest):
+    """Duplica un oggetto e salva nuova versione."""
+    blend_path = _resolve_blend(req.blend_path)
+    resolved_name = _resolve_object(req.object_name, blend_path)
+    
+    if not resolved_name:
+        return {"status": "error", "error": f"Oggetto '{req.object_name}' non trovato"}
+    
+    new_name = req.new_name or f"{resolved_name}_copia"
+    
+    try:
+        r = safe_operate(
+            blend_path,
+            core_duplicate_object,
+            [resolved_name, new_name],
+            description=f"Duplica {resolved_name}",
+            user_request="",
+        )
+        # Persisti stato
+        set_state("current_blend", r["version_path"])
+        set_state("last_created_object", new_name)
+        set_state("last_referenced_object", new_name)
+        set_state("last_change_id", r["version_id"])
+        
+        return {
+            "status": "ok",
+            "new_object": new_name,
+            "source_object": resolved_name,
+            "version_id": r["version_id"],
+            "version_path": r["version_path"],
+            "current_blend": r["version_path"],
+        }
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+@app.post("/tools/move")
+async def tool_move(req: ToolTransformRequest):
+    """Sposta un oggetto (relativo o assoluto)."""
+    blend_path = _resolve_blend(req.blend_path)
+    resolved_name = _resolve_object(req.object_name, blend_path)
+    
+    if not resolved_name:
+        return {"status": "error", "error": f"Oggetto '{req.object_name}' non trovato"}
+    
+    if req.relative:
+        # Leggi posizione corrente
+        cur = core_inspect_object_detail(blend_path, resolved_name)
+        if "error" in cur:
+            return {"status": "error", "error": cur["error"]}
+        x = float(cur["location"][0]) + req.x
+        y = float(cur["location"][1]) + req.y
+        z = float(cur["location"][2]) + req.z
+    else:
+        x, y, z = req.x, req.y, req.z
+    
+    try:
+        r = safe_operate(
+            blend_path,
+            core_move_object,
+            [resolved_name, x, y, z],
+            description=f"Sposta {resolved_name}",
+            user_request="",
+        )
+        set_state("current_blend", r["version_path"])
+        set_state("last_referenced_object", resolved_name)
+        set_state("last_change_id", r["version_id"])
+        
+        return {
+            "status": "ok",
+            "object": resolved_name,
+            "new_location": (x, y, z),
+            "version_id": r["version_id"],
+            "version_path": r["version_path"],
+            "current_blend": r["version_path"],
+        }
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+@app.post("/tools/rotate")
+async def tool_rotate(req: ToolTransformRequest):
+    """Ruota un oggetto (gradi)."""
+    blend_path = _resolve_blend(req.blend_path)
+    resolved_name = _resolve_object(req.object_name, blend_path)
+    
+    if not resolved_name:
+        return {"status": "error", "error": f"Oggetto '{req.object_name}' non trovato"}
+    
+    import math
+    rad_x, rad_y, rad_z = math.radians(req.x), math.radians(req.y), math.radians(req.z)
+    
+    try:
+        r = safe_operate(
+            blend_path,
+            core_rotate_object,
+            [resolved_name, rad_x, rad_y, rad_z],
+            description=f"Ruota {resolved_name} ({req.x}°, {req.y}°, {req.z}°)",
+            user_request="",
+        )
+        set_state("current_blend", r["version_path"])
+        set_state("last_referenced_object", resolved_name)
+        set_state("last_change_id", r["version_id"])
+        
+        return {
+            "status": "ok",
+            "object": resolved_name,
+            "rotation_euler_degrees": (req.x, req.y, req.z),
+            "version_id": r["version_id"],
+            "version_path": r["version_path"],
+            "current_blend": r["version_path"],
+        }
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+@app.post("/tools/hide")
+async def tool_hide(req: ToolHideRequest):
+    """Nasconde o mostra un oggetto."""
+    blend_path = _resolve_blend(req.blend_path)
+    resolved_name = _resolve_object(req.object_name, blend_path)
+    
+    if not resolved_name:
+        return {"status": "error", "error": f"Oggetto '{req.object_name}' non trovato"}
+    
+    fn = core_hide_object if req.hidden else core_show_object
+    try:
+        r = safe_operate(
+            blend_path,
+            fn,
+            [resolved_name],
+            description=f"{'Nascondi' if req.hidden else 'Mostra'} {resolved_name}",
+            user_request="",
+        )
+        set_state("current_blend", r["version_path"])
+        set_state("last_referenced_object", resolved_name)
+        set_state("last_change_id", r["version_id"])
+        
+        return {
+            "status": "ok",
+            "object": resolved_name,
+            "hidden": req.hidden,
+            "version_id": r["version_id"],
+            "version_path": r["version_path"],
+            "current_blend": r["version_path"],
+        }
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+@app.post("/tools/render")
+async def tool_render(req: ToolRenderRequest):
+    """Render preview del file corrente."""
+    blend_path = _resolve_blend(req.blend_path)
+    ts = datetime.now(tz=timezone.utc).strftime("%Y%m%d-%H%M%S")
+    out_name = f"preview_{ts}_f{req.frame:04d}.png"
+    
+    try:
+        out = core_render_preview(
+            blend_path=blend_path,
+            output_name=out_name,
+            resolution_x=1920,
+            resolution_y=1080,
+            samples=64,
+            frame=req.frame,
+            timeout=600,
+        )
+        return {
+            "status": "ok",
+            "render_path": out,
+            "render_url": f"/render-file/{out_name}",
+            "current_blend": blend_path,
+        }
+    except Exception as e:
+        return {"status": "error", "error": str(e)}
+
+
+@app.post("/tools/undo")
+async def tool_undo(req: ToolUndoRequest):
+    """Undo: ripristina la versione precedente."""
+    blend_path = _resolve_blend(req.blend_path)
+    versions = sorted(get_versions_dir().glob("[0-9][0-9][0-9][0-9].blend"))
+    
+    if len(versions) < 2:
+        return {"status": "error", "error": "Nessuna versione precedente disponibile"}
+    
+    previous = versions[-2]
+    new_path, meta = core_duplicate_version(
+        source_path=str(previous),
+        description=f"Undo: ripristino {previous.stem}",
+    )
+    
+    # Persisti stato
+    set_state("current_blend", new_path)
+    set_state("last_change_id", meta.version_id)
+    
+    return {
+        "status": "ok",
+        "restored_version": previous.stem,
+        "new_version": meta.version_id,
+        "version_path": new_path,
+        "current_blend": new_path,
+    }
+
+
+@app.post("/tools/reset")
+async def tool_reset():
+    """Resetta stato persistente."""
+    reset_state()
+    initial_blend = get_latest_blend()
+    set_state("current_blend", initial_blend)
+    set_state("last_referenced_object", None)
+    set_state("last_created_object", None)
+    set_state("last_change_id", None)
+    return {
+        "status": "ok",
+        "message": "Stato resettato",
+        "current_blend": initial_blend,
+    }
+
+
+@app.get("/tools/schema")
+async def tool_schema():
+    """Restituisce lo schema dei tool disponibili (per LLM)."""
+    return {
+        "tools": [
+            {
+                "name": "inspect",
+                "description": "Ispeziona un oggetto: geometria, materiali, posizione, vertici/facce",
+                "parameters": {
+                    "object_name": "string — nome dell'oggetto da ispezionare (es. Tastiera, Sgabello)",
+                    "blend_path": "string? (opzionale, auto-risolto)"
+                }
+            },
+            {
+                "name": "list",
+                "description": "Elenca tutti gli oggetti nella scena corrente",
+                "parameters": {}
+            },
+            {
+                "name": "duplicate",
+                "description": "Duplica un oggetto creando una nuova versione del file",
+                "parameters": {
+                    "object_name": "string — nome dell'oggetto da duplicare",
+                    "new_name": "string? nome per la copia (default: <originale>_copia)"
+                }
+            },
+            {
+                "name": "move",
+                "description": "Sposta un oggetto. Di default il movimento è RELATIVO (offset)",
+                "parameters": {
+                    "object_name": "string — nome dell'oggetto",
+                    "x": "float? offset/su asse X (destra=positivo, sinistra=negativo)",
+                    "y": "float? offset/pos su asse Y",
+                    "z": "float? offset/pos su asse Z",
+                    "relative": "bool? true=offset, false=coordinate assolute (default: true)"
+                }
+            },
+            {
+                "name": "rotate",
+                "description": "Ruota un oggetto di N gradi su uno o più assi",
+                "parameters": {
+                    "object_name": "string — nome dell'oggetto",
+                    "x": "float? gradi su asse X",
+                    "y": "float? gradi su asse Y",
+                    "z": "float? gradi su asse Z"
+                }
+            },
+            {
+                "name": "hide",
+                "description": "Nasconde un oggetto nella viewport",
+                "parameters": {
+                    "object_name": "string — nome dell'oggetto"
+                }
+            },
+            {
+                "name": "show",
+                "description": "Mostra un oggetto nascosto",
+                "parameters": {
+                    "object_name": "string — nome dell'oggetto"
+                }
+            },
+            {
+                "name": "render",
+                "description": "Genera un render preview del file corrente",
+                "parameters": {
+                    "frame": "int? frame da renderizzare (default: 1)"
+                }
+            },
+            {
+                "name": "undo",
+                "description": "Annulla l'ultima modifica: ripristina la versione precedente",
+                "parameters": {}
+            },
+            {
+                "name": "reset",
+                "description": "Resetta lo stato della conversazione",
+                "parameters": {}
+            },
+        ]
+    }
+
+
+# ─── Persistent State endpoints ─────────────────────
+
+
+@app.get("/state")
+async def get_persistent_state():
+    """Restituisce lo stato persistente corrente."""
+    return get_all_state()
+
+
+@app.get("/history")
+async def get_conversation_history(limit: int = 50):
+    """Restituisce la cronologia della conversazione."""
+    return {"history": get_history(limit)}
+
+
 # ─── Agent Chat ────────────────────────────────────────
 
 
@@ -387,6 +858,12 @@ async def chat(req: ChatRequest):
     """Invia un messaggio in linguaggio naturale all'agente."""
     try:
         result = agent.handle(req.message)
+        # Persisti storico
+        add_history("user", req.message)
+        if result.get("status") == "ok":
+            add_history("assistant", result.get("response", "")[:500])
+        elif result.get("status") == "error":
+            add_history("error", result.get("error", "")[:500])
         return result
     except Exception as e:
         return {
@@ -400,11 +877,12 @@ async def chat(req: ChatRequest):
 async def get_context():
     """Restituisce il contesto corrente della conversazione."""
     return {
-        "conversation_id": agent.conversation_id,
-        "last_action": agent.last_action,
-        "last_object": agent.last_object,
-        "current_blend": agent.current_blend,
-        "history": agent.history[-20:],
+        "conversation_id": getattr(agent, 'conversation_id', ''),
+        "last_action": agent.last_action if hasattr(agent, 'last_action') else None,
+        "last_object": agent.last_object if hasattr(agent, 'last_object') else None,
+        "current_blend": get_state("current_blend", agent.current_blend if hasattr(agent, 'current_blend') else None),
+        "history": get_history(20),
+        "persistent_state": get_all_state(),
     }
 
 
@@ -412,6 +890,7 @@ async def get_context():
 async def reset_context():
     """Resetta il contesto della conversazione."""
     agent.reset()
+    reset_state()
     return {"status": "ok", "message": "Contesto resettato"}
 
 
@@ -478,13 +957,13 @@ body { font-family:system-ui,sans-serif; background:#1a1a2e; color:#e0e0e0; heig
 </head>
 <body>
 <div id="header">
-  <div><h1>🧊 Il Portale — Blender Agent</h1><small>Parla in italiano. L'agente interpreta e modifica il .blend.</small></div>
+  <div><h1>🧊 Il Portale — Blender Agent v0.2.1</h1><small>Parla in italiano. L'agente interpreta e modifica il .blend.</small></div>
   <button class="debug-toggle" onclick="toggleDebug()">🐞 Debug</button>
 </div>
 <div id="debug-panel"></div>
 <div id="chat"></div>
 <div id="input-area">
-<input id="input" placeholder="Es: 'Analizza la struttura'" autofocus>
+<input id="input" placeholder="Es: 'Analizza la Tastiera'" autofocus>
 <button id="send" onclick="send()">Invia</button>
 </div>
 <div id="status" class="status">Pronto</div>
@@ -504,7 +983,6 @@ function toggleDebug() {
 function updateDebug(data) {
     if (!data || !data.debug) return;
     let html = "";
-    // Conversation state
     if (data.state) {
         html += '<div class="state-row">';
         for (const [k,v] of Object.entries(data.state)) {
@@ -512,23 +990,17 @@ function updateDebug(data) {
         }
         html += '</div>';
     }
-    // Steps
     if (data.debug.steps) {
         for (const step of data.debug.steps) {
             html += '<div class="debug-step">';
             if (step.step === "intent") {
-                html += '<span class="label">🎯 Intent:</span> <span class="value intent">' + (step.intent || "?") + '</span> <span class="label">(conf:</span> <span class="value">' + (step.confidence || "?") + ')</span>';
-            } else if (step.step === "entities") {
-                html += '<span class="label">📦 Entità:</span> <span class="value">' + JSON.stringify(step.entities || {}) + '</span>';
-            } else if (step.step === "resolution") {
-                html += '<span class="label">🔗 Risolto:</span> <span class="value">' + JSON.stringify(step.resolved || {}) + '</span>';
+                html += '<span class="label">Intent:</span> <span class="value intent">' + (step.intent || "?") + '</span>';
             } else if (step.step === "execute") {
                 const r = step.result || {};
-                html += '<span class="label">⚡ Esegui:</span> <span class="value result">' + (r.status || "?") + '</span>';
+                html += '<span class="label">Eseguito:</span> <span class="value result">' + (r.status || "?") + '</span>';
                 if (r.version_id) html += ' <span class="label">v:</span><span class="value">' + r.version_id + '</span>';
-                if (r.last_object) html += ' <span class="label">obj:</span><span class="value">' + r.last_object + '</span>';
             } else if (step.step === "error") {
-                html += '<span class="label">❌ Errore:</span> <span class="value error">' + (step.error || "").substring(0,100) + '</span>';
+                html += '<span class="label">Errore:</span> <span class="value error">' + (step.error || "").substring(0,100) + '</span>';
             } else {
                 html += '<span class="label">' + step.step + ':</span> <span class="value">' + JSON.stringify(step).substring(0,150) + '</span>';
             }
@@ -552,7 +1024,7 @@ async function send() {
     addMsg(msg, "user");
     input.value = "";
     sendBtn.disabled = true;
-    status.textContent = "⏳ L'agente sta lavorando...";
+    status.textContent = "L'agente sta lavorando...";
     try {
         const resp = await fetch("/chat", {
             method: "POST",
@@ -561,7 +1033,7 @@ async function send() {
         });
         const data = await resp.json();
         if (data.status === "error") {
-            addMsg('<span class="error">❌ ' + data.error + '</span>');
+            addMsg('<span class="error">' + data.error + '</span>');
         } else {
             let html = data.response || data.message || JSON.stringify(data);
             addMsg(html);
@@ -569,12 +1041,12 @@ async function send() {
                 addMsg('<img src="' + data.render_url + '" alt="render">');
             }
             if (data.version_id) {
-                addMsg('<span class="ok">✔ Versione ' + data.version_id + ' creata</span>');
+                addMsg('<span class="ok">Versione ' + data.version_id + ' creata</span>');
             }
         }
         updateDebug(data);
     } catch (e) {
-        addMsg('<span class="error">❌ Errore di connessione: ' + e.message + '</span>');
+        addMsg('<span class="error">Errore di connessione: ' + e.message + '</span>');
     }
     sendBtn.disabled = false;
     status.textContent = "Pronto";
@@ -583,8 +1055,7 @@ async function send() {
 
 input.addEventListener("keydown", (e) => { if (e.key === "Enter") send(); });
 
-// Messaggio iniziale
-addMsg("👋 Ciao! Sono l'agente Blender. Posso ispezionare, modificare e versionare il tuo file.\n\n🔍 Prova: 'Analizza la Tastiera'\n✏️ Poi: 'Creane una copia di lavoro'\n🎯 Poi: 'Spostala di lato'\n\n💡 Uso pronomi come 'ne', 'la', 'lo' per riferirmi all'ultimo oggetto.");
+addMsg("Ciao! Sono l'agente Blender. Posso ispezionare, modificare e versionare il tuo file.");
 </script>
 </body>
 </html>
