@@ -161,25 +161,26 @@ def core_list_blend_files() -> list[BlendFileInfo]:
 
 def _run_blender(
     blend_path: Path,
-    script_path: str,
+    script_path: str | None,
     extra_args: list[str] | None = None,
     timeout: int = 300,
 ) -> str:
     """
-    Esegue Blender headless: blender --background <blend> --python <script> [-- <extra_args>].
-
-    Restituisce stdout.
+    Esegue Blender headless.
+    Se script_path è None, usa solo CLI flags (es. -F PNG -o ... -f 1).
+    Altrimenti: blender --background <blend> --python <script> [-- <extra_args>].
     Mai shell=True.
     """
     cmd = [
         BLENDER_CMD,
         "--background",
         str(blend_path),
-        "--python",
-        script_path,
     ]
+    if script_path:
+        cmd.extend(["--python", script_path])
     if extra_args:
-        cmd.append("--")
+        if script_path:
+            cmd.append("--")
         cmd.extend(extra_args)
 
     result = subprocess.run(
@@ -260,18 +261,11 @@ import bpy
 import sys
 import os
 
-# Argv dopo --
+# Render usando CLI -F PNG bypassa il bug API di Blender 5.2
 args = sys.argv[sys.argv.index("--") + 1:] if "--" in sys.argv else []
 output_path = args[0] if len(args) > 0 else "/tmp/render.png"
-resolution_x = int(args[1]) if len(args) > 1 else 1920
-resolution_y = int(args[2]) if len(args) > 2 else 1080
-samples = int(args[3]) if len(args) > 3 else 64
-frame = int(args[4]) if len(args) > 4 else 1
+frame = int(args[1]) if len(args) > 1 else 1
 
-bpy.context.scene.render.resolution_x = resolution_x
-bpy.context.scene.render.resolution_y = resolution_y
-if hasattr(bpy.context.scene, "cycles"):
-    bpy.context.scene.cycles.samples = samples
 bpy.context.scene.frame_current = frame
 bpy.context.scene.render.filepath = output_path
 bpy.ops.render.render(write_still=True)
@@ -289,35 +283,40 @@ def core_render_preview(
     timeout: int = 600,
 ) -> str:
     """
-    Esegue un render headless del frame corrente.
+    Esegue un render headless del frame corrente usando CLI flags.
     output_name è un nome file (es. preview.png), sempre dentro renders/.
     Restituisce il path assoluto dell'immagine renderizzata.
     """
     resolved = resolve_input_blend(blend_path)
+    # Sostituisci .png con padding per formato Blender (es: preview_ → preview_0001.png)
+    stem = Path(output_name).stem
     output_path = resolve_workspace_output(output_name, subdir="renders")
 
-    with tempfile.NamedTemporaryFile(mode="w", suffix=".py", delete=False) as f:
-        f.write(_RENDER_PREVIEW_SCRIPT)
-        script_path = f.name
+    # Usa CLI flags direttamente: -F PNG bypassa bug Blender 5.2
+    # Blender aggiunge automaticamente padding frame (es. _0001) con -f
+    # Output: /renders/preview_0001.png
+    out_dir = str(output_path.parent)
+    out_base = stem + "_"
 
-    try:
-        stdout = _run_blender(
-            resolved,
-            script_path,
-            extra_args=[
-                str(output_path),
-                str(resolution_x),
-                str(resolution_y),
-                str(samples),
-                str(frame),
-            ],
-            timeout=timeout,
-        )
-        if "RENDER_OK" not in stdout:
-            raise RuntimeError(f"Render non completato.\nstdout:\n{stdout[-1000:]}")
-        return str(output_path)
-    finally:
-        os.unlink(script_path)
+    stdout = _run_blender(
+        resolved,
+        script_path=None,
+        extra_args=[
+            "-F", "PNG",
+            "-o", os.path.join(out_dir, out_base),
+            "-f", str(frame),
+        ],
+        timeout=timeout,
+    )
+
+    if "Saved:" not in stdout and "RENDER_OK" not in stdout:
+        raise RuntimeError(f"Render non completato.\nstdout:\n{stdout[-1000:]}")
+
+    # Trova il file renderizzato
+    rendered = sorted(output_path.parent.glob(stem + "_*.png"))
+    if rendered:
+        return str(rendered[-1])
+    return str(output_path)
 
 
 # ─── Duplicate version ─────────────────────────────────
