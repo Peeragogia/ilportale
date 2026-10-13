@@ -28,6 +28,21 @@ CHANGES_DIR = None
 ORIGINALS_DIR = None
 BLENDER_CMD = os.environ.get("BLENDER_HEADLESS_CMD", "blender")
 
+
+def _env_flag(name: str, default: bool = False) -> bool:
+    """Legge un flag booleano da os.environ o, come fallback, dal file
+    /run/s6/container_environment/<NAME> (le docker env che linuxserver/s6
+    non passa ai processi app vengono salvate lì)."""
+    val = os.environ.get(name)
+    if val is None:
+        try:
+            p = Path(f"/run/s6/container_environment/{name}")
+            if p.exists():
+                val = p.read_text().strip()
+        except OSError:
+            pass
+    return (val or "").lower() == "true"
+
 _WORKSPACE_CACHE = {}
 
 
@@ -374,7 +389,7 @@ bpy.ops.wm.open_mainfile(filepath=blend_input)
 
 # Salva output
 bpy.ops.wm.save_as_mainfile(filepath=blend_output)
-print(f"SAVE_OK:{blend_output}")
+print("SAVE_OK:" + blend_output)
 """
 
 
@@ -393,7 +408,7 @@ def core_apply_blender_script(
 
     Restituisce (output_path, ChangeRecord).
     """
-    ENABLE_RAW_PYTHON = os.environ.get("ENABLE_RAW_PYTHON", "false").lower() == "true"
+    ENABLE_RAW_PYTHON = _env_flag("ENABLE_RAW_PYTHON")
     if not ENABLE_RAW_PYTHON:
         raise PermissionError(
             "Rifiutato: ENABLE_RAW_PYTHON non è abilitato. "

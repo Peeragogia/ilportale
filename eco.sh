@@ -14,7 +14,9 @@
 
 GUI_CONTAINER="blender-qfrr3ylfwtz97sws9bjuwl8y"
 API_URL="https://agent.blender.pyragogy.org/health"
-BLEND_FILE="/workspace/versions/0023.blend"
+STATE_URL="https://agent.blender.pyragogy.org/state"
+# Ultima versione dalla persistent state (fallback 0023)
+BLEND_FILE="/workspace/$(curl -s -m 5 "$STATE_URL" 2>/dev/null | python3 -c 'import sys,json; print(json.load(sys.stdin).get("current_blend","versions/0023.blend"))' 2>/dev/null || echo versions/0023.blend)"
 STARTUP="/workspace/startup.py"
 
 # ── Funzioni ──────────────────────────────────────────────────

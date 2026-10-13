@@ -19,7 +19,7 @@ from fastapi.responses import HTMLResponse, FileResponse
 from pydantic import BaseModel
 from typing import Optional
 
-from app.blender import (
+from app.blender import (_env_flag,
     core_list_blend_files,
     core_inspect_scene,
     core_render_preview,
@@ -210,7 +210,7 @@ async def health():
             "show": True,
             "agent": True,
             "undo": True,
-            "apply_script": os.environ.get("ENABLE_RAW_PYTHON", "false").lower() == "true",
+            "apply_script": _env_flag("ENABLE_RAW_PYTHON"),
             "persistent_state": True,
         },
     }
