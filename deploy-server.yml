@@ -1,0 +1,75 @@
+services:
+  il-portale:
+    image: ttl.sh/peeragogia/il-portale:latest
+    container_name: ilportale-api
+    restart: unless-stopped
+    ports:
+      - "8100:8100"
+      - "8200:8200"
+    environment:
+      - API_PORT=8100
+      - MCP_PORT=8200
+      - WORKSPACE_DIR=/workspace
+      - ENABLE_RAW_PYTHON=true
+    volumes:
+      - workspace_volume:/workspace
+    command: /venv/bin/python -m app.start_both
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=coolify"
+      - "traefik.http.routers.ilportale-api.rule=Host(`agent.blender.pyragogy.org`)"
+      - "traefik.http.routers.ilportale-api.entrypoints=https"
+      - "traefik.http.routers.ilportale-api.tls=true"
+      - "traefik.http.routers.ilportale-api.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.ilportale-api.service=ilportale-api"
+      - "traefik.http.services.ilportale-api.loadbalancer.server.port=8100"
+      - "traefik.http.routers.ilportale-mcp.rule=Host(`agent.blender.pyragogy.org`) && PathPrefix(`/mcp`)"
+      - "traefik.http.routers.ilportale-mcp.service=ilportale-mcp"
+      - "traefik.http.routers.ilportale-mcp.entrypoints=https"
+      - "traefik.http.routers.ilportale-mcp.tls=true"
+      - "traefik.http.routers.ilportale-mcp.tls.certresolver=letsencrypt"
+      - "traefik.http.services.ilportale-mcp.loadbalancer.server.port=8200"
+    networks:
+      - coolify
+
+  # ── GUI Blender (Selkies/WebRTC) — blender.pyragogy.org ────────
+  blender-gui:
+    image: ttl.sh/peeragogia/il-portale:latest
+    container_name: blender-qfrr3ylfwtz97sws9bjuwl8y
+    restart: unless-stopped
+    # Bypassa start-backend.sh che chiama exec /init in loop (s6-overlay bug)
+    # Avvia backend in bg, poi exec /init per s6 (Selkies + GUI)
+    entrypoint: ["/bin/bash"]
+    command: ["-c", "cd /app && /venv/bin/python -m app.api & exec /init"]
+    environment:
+      - TZ=Europe/Rome
+      - PUID=1000
+      - PGID=1000
+      - CUSTOM_USER=admin
+      # PASSWORD dalla env file del server (/root/deploy.env) — mai in git
+      - PASSWORD=${GUI_PASSWORD}
+    volumes:
+      - gui_config:/config
+      - workspace_volume:/workspace
+    networks:
+      - coolify
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=coolify"
+      - "traefik.http.routers.ilportale-gui.rule=Host(`blender.pyragogy.org`)"
+      - "traefik.http.routers.ilportale-gui.entrypoints=https"
+      - "traefik.http.routers.ilportale-gui.tls=true"
+      - "traefik.http.routers.ilportale-gui.tls.certresolver=letsencrypt"
+      - "traefik.http.services.ilportale-gui.loadbalancer.server.port=3000"
+
+volumes:
+  gui_config:
+    external: true
+    name: qfrr3ylfwtz97sws9bjuwl8y_config
+  workspace_volume:
+    external: true
+    name: qfrr3ylfwtz97sws9bjuwl8y_workspace
+
+networks:
+  coolify:
+    external: true
