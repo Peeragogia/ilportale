@@ -1,4 +1,4 @@
-# ROADMAP.md
+# ROADMAP.md — Il Portale
 
 ## Milestone 0.1 — Tubatura deterministica 🎯
 
@@ -13,28 +13,61 @@ Obiettivo: repo → Coolify → Blender web funzionante → .blend condiviso
 - [x] Script Blender (inspect_scene, render_preview, apply_change)
 - [x] Versioning non-distruttivo
 - [x] Validazione path sicurezza
-- [ ] Deploy su Coolify e test end-to-end
-- [ ] Blender web funzionante via browser
-- [ ] MCP risponde con struttura scena reale
-- [ ] Render headless produce immagine
+- [x] Deploy su Coolify e test end-to-end
+- [x] Blender web funzionante via browser
+- [x] MCP risponde con struttura scena reale
+- [x] Render headless produce immagine
 
-## Milestone 0.2 — Operatività
+✅ **Milestone 0.1 completata** (13/10/2026).
 
-- [ ] Upload .blend via API
-- [ ] Comandi di modifica strutturale (aggiungi/rimuovi/sposta oggetti)
-- [ ] Lista modifiche applicate con rollback
-- [ ] Inventario completo dello stato
+## Milestone 0.2 — Blockout Caprotti 🎯
 
-## Milestone 0.3 — Voce → AI → MCP
+Obiettivo: modello Blender riconoscibile del Padiglione del Tè di Parco Caprotti,
+con Il Portale installato all'interno, versioni tracciabili e renders di verifica.
 
-Percorso esplicito: **Voice → LLM → MCP → Blender Core → versioned .blend → render → multimodal review**
+### Fase 2.1 — Dossier e ricerca
+- [x] Importazione dossier Caprotti (`docs/caprotti/`)
+- [x] Review dossier — CONDITIONAL GO 83/100
+- [x] Verifica 6 URL immagini pubbliche (HTTP 200)
+- [x] Pixel analysis per proporzioni (OpenCV)
+
+### Fase 2.2 — Blockout architettonico
+- [x] Script blockout v1 (`services/scripts/caprotti_blockout_v1.py`)
+- [x] 0044.blend — 215 oggetti, 5 camere, collezioni evidenza-taggate
+- [x] 5 renders Eevee (3 esterni, 2 interni)
+- [x] Auto-review: **76/100** — GATE NON SUPERATO (< 80)
+
+### Bloccante: illuminazione interna
+- [ ] Aggiungere point light soffuse dentro il padiglione
+- [ ] Ri-renderizzare INT_ENTRANCE + INT_PORTALE_POSITION
+- [ ] Re-auto-review (gate ≥ 80 per sbloccare Fase 2.3)
+
+### Fase 2.3 — Ipotesi collocazione
+- [ ] Ipotesi A — centrale/iconico
+- [ ] Ipotesi B — laterale/funzionale
+- [ ] Ipotesi C — ambiente integrato
+- [ ] Renders comparativi + note PROVVISORIO
+
+### Fase 2.4 — Raffinamento
+- [ ] Refine architettonico (cornici, colonne, fregi, statue, materiali)
+- [ ] Experience design (ingresso, utente, seduta, tastiera, schermo, audio)
+- [ ] 6 renders finali (3 esterne + 2 interne + 1 esperienza utente)
+
+## Milestone 0.3 — Misure reali e calibrazione
+
+- [ ] Sopralluogo Fabrizio — foto retro/tetto + misure reali
+- [ ] Riscalatura del modello da proporzionale a metrico
+- [ ] Validazione con foto reali
+- [ ] Report finale "Il Portale al Padiglione del Tè"
+
+## Milestone 0.4 — Voce → AI → MCP
 
 - [ ] Integrazione speech-to-text
 - [ ] LLM agente che usa strumenti MCP
 - [ ] Loop di review: AI vede render, decide se iterare
 - [ ] Pipeline modulare (ogni blocco sostituibile)
 
-## Milestone 0.4 — Multi-agente
+## Milestone 0.5 — Multi-agente
 
 - [ ] Più agenti specializzati (geometria, materiali, lighting)
 - [ ] Coda richieste e lock sui file

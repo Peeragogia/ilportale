@@ -30,6 +30,22 @@ The site is not a later aesthetic choice. The original Il Portale paper already 
 - [`DECISIONS_AND_OPEN_QUESTIONS.md`](DECISIONS_AND_OPEN_QUESTIONS.md) — decisions, uncertainties and research gaps.
 - [`reference-manifest.schema.json`](reference-manifest.schema.json) — machine-readable reference metadata.
 
+## Session log
+
+- [`SESSION_2026-10-13.md`](../SESSION_2026-10-13.md) — blockout v1 (0044.blend), 5 renders Eevee, auto-review (76/100), GUI fix.
+
+## Renders di verifica
+
+I renders blockout sono in `/workspace/renders/` (sul server):
+
+| Vista | Dimensione | Note |
+|-------|:----------:|------|
+| EXT_FRONT_3Q | 297 KB | ✅ Facciata principale 3/4 |
+| EXT_STAIR_3Q | 178 KB | ✅ Scala laterale 3/4 |
+| EXT_POND | 79 KB | ✅ Vista dallo stagno |
+| INT_ENTRANCE | 33 KB | ⚠️ Buio — manca illuminazione interna |
+| INT_PORTALE_POSITION | 66 KB | ⚠️ Buio — manca illuminazione interna |
+
 ## Image policy
 
 Public reference photographs are **linked, not redistributed**, unless licensing is explicitly known. This keeps provenance clear and avoids copying third-party image files into the repository. The folder `images/` contains only material generated from the user-owned Il Portale PDF and original project diagrams.
@@ -37,5 +53,4 @@ Public reference photographs are **linked, not redistributed**, unless licensing
 ## Modelling principle
 
 > **Reconstruct the specific Padiglione del Tè, not a generic neo-Renaissance pavilion.**
-
-The first goal is recognisable geometry and spatial feasibility, not decorative perfection.
+>The first goal is recognisable geometry and spatial feasibility, not decorative perfection.
