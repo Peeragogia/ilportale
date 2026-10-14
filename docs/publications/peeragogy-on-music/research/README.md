@@ -1,6 +1,6 @@
 # Ricerca per la pubblicazione — `Peeragogy on Music`
 
-Questa cartella non contiene ancora il paper. Contiene il lavoro che deve impedire al paper di diventare una riscrittura elegante ma fragile.
+Il paper italiano v0.2 è nei sorgenti LaTeX della cartella superiore. Questa cartella contiene la base di ricerca. Contiene il lavoro che deve impedire al paper di diventare una riscrittura elegante ma fragile.
 
 ## Obiettivo
 
@@ -42,7 +42,7 @@ Ogni claim rilevante deve ricadere in una di queste classi:
 - `01_STORIA_PARCO_E_PADIGLIONE.md` — cronologia e lacune documentarie.
 - `02_POTENZIALITA_PROGETTO.md` — potenziale tecnico, educativo, civico e attrattivo.
 - `03_DOMANDE_E_METODO.md` — domanda di ricerca e metodo proposto.
-- `SOURCE_REGISTER.md` — fonti già verificate e loro funzione.
+- `SOURCE_REGISTER.md` — fonti, stato delle verifiche e loro funzione.
 - `CLAIM_REGISTER.md` — claim da conservare, qualificare o verificare.
 
 ## Regola editoriale

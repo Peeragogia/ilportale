@@ -66,7 +66,7 @@ Nel 2023 **Contemporary Locus 15** ha usato il Parco e il Padiglione come spazio
 
 Questo precedente toglie al nostro progetto un possibile equivoco: usare il Padiglione per cultura contemporanea **non è una rottura senza precedenti**. Esiste già una pratica recente di riattivazione culturale temporanea e site-specific.
 
-Nel 2024 il lavoro di Contemporary Locus è stato seguito da un questionario, sviluppato con la collaborazione di **Università di Bergamo** e **Orto Botanico**, per raccogliere idee e proposte sulla valorizzazione del Parco e sulla rigenerazione del Padiglione.
+L'articolo di Prima Bergamo del 12 febbraio 2024 (PUB-S06, sezione «Un questionario ai visitatori del Parco») riferisce di un questionario preparato con l'Orto Botanico e di esiti analizzati da Contemporary Locus con l'Università degli Studi di Bergamo. Il 2024 è la data del resoconto, non necessariamente della somministrazione. La fonte è secondaria e non documenta alcun coinvolgimento di questi enti nel progetto Il Portale.
 
 Nel febbraio 2026 il programma comunale **Bergamo per Giovani** ha ospitato a Parco Caprotti un pomeriggio di sperimentazione artistica comprendente anche una **jam session musicale**.
 

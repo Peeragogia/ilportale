@@ -1,8 +1,8 @@
 \documentclass[12pt,a4paper]{article}
-
-% ─── Pacchetti essenziali ─────────────────────────────────────
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[provide=*,italian]{babel}
 \usepackage{geometry}
 \geometry{margin=2.5cm}
 \usepackage{microtype}
@@ -10,61 +10,36 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage[numbers,sort&compress]{natbib}
+\usepackage{xurl}
 \usepackage{hyperref}
-
-\hypersetup{
-    colorlinks=true,
-    linkcolor=black,
-    citecolor=black,
-    urlcolor=blue!60!black,
-    pdftitle={Peeragogy on Music},
-    pdfauthor={Fabrizio~Terzi},
-    pdfsubject={Civic Music Learning Point}
-}
-
-% ─── Metadati documento ──────────────────────────────────────
-\title{\textbf{Peeragogy on Music}\\[0.5em]
-    \large From a 2013--2016 Concept to a Civic Music Learning Point}
-
-\author{Fabrizio Terzi\\[0.3em]
-    \small \textsf{Pyragogy / Peeragogia}}
-
-\date{Draft --- \today}
-
+\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue!60!black,
+pdftitle={Il Portale - Peeragogy on Music},pdfauthor={Fabrizio Terzi},
+pdfsubject={Ricostruzione del progetto e proposta di apprendimento musicale civico}}
+\setlength{\emergencystretch}{2em}
+\title{\textbf{Il Portale}\\[0.4em]\large Peeragogy on Music\\
+Dal concept 2013--2016 a un luogo civico di apprendimento musicale}
+\author{Fabrizio Terzi\\[0.3em]\small\textsf{Pyragogy / Peeragogia}}
+\date{Bozza italiana v0.2 --- 14 ottobre 2026}
 \begin{document}
-
 \maketitle
-
-% ─── Abstract PROVVISORIO ────────────────────────────────────
 \begin{abstract}
-This document traces the arc of \emph{Il Portale}, a concept for a civic music
-learning point first proposed between 2013 and 2016 as a submission to the
-Free Technology Guild journal.  The original proposal combined a physical
-drop-shaped audio---visual structure, a digital keyboard, an OLED display,
-and networked learning resources into a single accessible station for music
-education.  The present work reconstructs the historical concept, situates it
-within the peeragogical framework that informed its design, and documents the
-ongoing exploration of the Tea Pavilion in Parco Caprotti, Bergamo, as a
-candidate physical host.  No experimental results are reported; this is a
-position and research-through-design document written to scaffold collaborative
-development and critical review.
+Il Portale nasce come proposta per unire uno strumento musicale, risorse
+digitali e apprendimento tra pari in una postazione fisica. Il documento
+conservato, datato 2016 e recante un riferimento al 2013, indica già Parco
+Caprotti a Bergamo. Riprendere oggi quel progetto richiede di distinguere
+l'intenzione originaria dalle scelte che stiamo introducendo. Questa bozza
+ricostruisce la proposta e considera il Padiglione del Tè come possibile sede:
+una candidatura contemporanea, ancora da verificare. La ricerca intreccia
+lettura della fonte, storia del luogo e progettazione documentata. Formula
+criteri per un futuro prototipo, senza presentare risultati di apprendimento
+o attestazioni di fattibilità. La questione è come rendere un primo incontro
+con la musica accessibile, condivisibile e sostenibile dentro uno spazio pubblico.
 \end{abstract}
-
-% ─── Contenuto ───────────────────────────────────────────────
-% Arco narrativo (vedi README.md):
-%   1. 2013/2016 concept          → 01_origin
-%   2. Original technical object  → 02_concept
-%   3. Learning City Point       → 03_learning_point
-%   4. Caprotti 2026             → 04_caprotti
-%   5. Future work               → 05_future_work
-\include{sections/01_origin}
-\include{sections/02_concept}
-\include{sections/03_learning_point}
-\include{sections/04_caprotti}
-\include{sections/05_future_work}
-
-% ─── Bibliografia ────────────────────────────────────────────
+\input{sections/01_origin}
+\input{sections/02_concept}
+\input{sections/03_learning_point}
+\input{sections/04_caprotti}
+\input{sections/05_future_work}
 \bibliographystyle{plainnat}
 \bibliography{references}
-
 \end{document}

@@ -1,77 +1,37 @@
-# Peeragogy on Music — Publication Scaffold
-
-Questa cartella ospita lo sviluppo editoriale del progetto **Peeragogy on Music**,
-dal concept originale 2013–2016 al Civic Music Learning Point contemporaneo.
+# Il Portale — Peeragogy on Music
 
 ## Stato
 
-**Scaffold iniziale** — nessun contenuto definitivo.
+Prima bozza italiana completa v0.2, 14 ottobre 2026: cinque sezioni, riassunto e bibliografia. Documento di progetto e programma di ricerca; nessun risultato sperimentale o fattibilità attestata. La review di Pi sulla v0.2 resta da completare.
 
-## Regole
+## Sorgenti
 
-1. **Fonte primaria**: il PDF storico in `docs/caprotti/source-material/Peeragogy_on_Music.pdf`
-   è il documento originale. Non viene riscritto, corretto o reinterpretato liberamente.
-2. **Distinzione rigorosa**: fonte originale, ricostruzione storica, sviluppi contemporanei
-   e interpretazioni attuali sono tenuti separati.
-3. **Niente claim nuovi presentati come storici** — ogni affermazione nuova è marcata come tale.
-4. **Versioni**: il documento evolve per versioni, non in un unico passo.
-
-## Arco narrativo
-
-L'arco editoriale del documento segue cinque strati, ognuno con una sezione dedicata:
-
-```
-2013/2016 concept          → sections/01_origin.tex
-     ↓
-Original technical object  → sections/02_concept.tex
-     ↓
-Learning City Point       → sections/03_learning_point.tex
-     ↓
-Caprotti 2026             → sections/04_caprotti.tex
-     ↓
-Future work               → sections/05_future_work.tex
-```
-
-Ogni strato è concettualmente distinto: il passaggio dal secondo al terzo
-separa *ciò che l'oggetto è* (stazione tecnica) da *ciò che diventa nella
-città* (destinazione civica di apprendimento).
-
-## Struttura
-
-```
-peeragogy-on-music/
-├── README.md         ← questo file
-├── main.tex          ← documento LaTeX principale
-├── references.bib    ← bibliografia (minimale, provvisoria)
-├── sections/         ← sezioni .tex separate
-│   ├── 01_origin.tex
-│   ├── 02_concept.tex
-│   ├── 03_learning_point.tex
-│   ├── 04_caprotti.tex
-│   └── 05_future_work.tex
-└── figures/          ← figure (da verificare, non copiate)
-    └── README.md     ← catalogo provvisorio delle figure candidate
-```
+- `main.tex`: metadati, lingua italiana e struttura.
+- `sections/01_origin.tex`: fonte originale, cronologia dichiarata e metodo.
+- `sections/02_concept.tex`: oggetto storico e scelte tecniche contemporanee.
+- `sections/03_learning_point.tex`: apprendimento tra pari, OER e pubblici.
+- `sections/04_caprotti.tex`: contesto storico, candidatura e funzione civica.
+- `sections/05_future_work.tex`: modello, prototipo e programma di verifica.
+- `references.bib`: sei fonti citate, con ID stabili.
+- `research/`: registri e risposta alla review, con fonti PUB-Snn distinte dal dossier tecnico.
+- `main.pdf`: compilazione della v0.2; ricompilare dopo ogni modifica dei sorgenti.
 
 ## Compilazione
 
-```bash
-pdflatex main.tex
-```
-
-Oppure, se `latexmk` è disponibile:
+Dalla cartella corrente:
 
 ```bash
-latexmk -pdf main.tex
+latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
 ```
 
-La compilazione richiede un'installazione TeX Live standard (2020+).
-Nessun pacchetto proprietario o font esterno obbligatorio.
+Alternativa: `pdflatex main.tex`, `bibtex main`, quindi `pdflatex main.tex` due volte.
 
-## Roadmap editoriale
+Verificato con TeX Live 2023, Babel recente (opzione `provide=*` per italiano), Latin Modern e xurl. Sei pagine, nessuna citazione irrisolta, nessun warning o box fuori margine nel log finale; pagine renderizzate e controllate. La compilazione non valida i contenuti.
 
-1. ✅ Scaffold LaTeX minimale (questo)
-2. [ ] Revisione con Fabrizio e ChatGPT
-3. [ ] Prima bozza completa
-4. [ ] Revisione peer
-5. [ ] Pubblicazione
+## Regole e coordinamento
+
+La fonte originale in `docs/caprotti/source-material/Peeragogy_on_Music.pdf` resta invariata. Separare dati della fonte, interpretazioni e proposte. «Filed» non è prova di deposito legale. Parco Caprotti è nella fonte; Padiglione è candidato contemporaneo.
+
+ChatGPT modifica i sorgenti editoriali; Pi svolge review critica e verifica tecnica riferita a SHA. Correzioni tecniche concorrenti su branch separato. Canale: https://github.com/Peeragogia/ilportale/pull/2
+
+Restano aperti rilievo, tutela specifica, localizzatori archivistici, verifiche delle fonti storiche deboli e disponibilità del luogo. La voce applica il riepilogo di Pi, non una skill completa qui disponibile.

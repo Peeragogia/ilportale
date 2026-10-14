@@ -48,11 +48,11 @@ Per Il Portale questo suggerisce una scelta precisa:
 - repository pubblico del progetto;
 - separazione netta fra dati utente e contenuti didattici.
 
-### Digital twin e reversibilità
+### Modello progettuale e reversibilità
 
 La ricostruzione Blender non è solo visualizzazione.
 
-Può diventare il **digital twin progettuale** sul quale testare:
+Può diventare un **modello progettuale verificabile e versionato** per confrontare ipotesi su:
 
 - ingombri;
 - passaggi;
@@ -63,6 +63,8 @@ Può diventare il **digital twin progettuale** sul quale testare:
 - posizionamenti alternativi;
 - accessibilità;
 - reversibilità dell'installazione.
+
+Il blockout proporzionale non è un gemello digitale calibrato. Passaggi e accessibilità richiedono quote reali; acustica e comfort richiedono misure e strumenti specialistici. Un render non li verifica.
 
 Per un luogo storico questa è una funzione concreta: sbagliare nel modello costa poco; sbagliare sul manufatto costa molto.
 
@@ -193,3 +195,7 @@ Il progetto diventa più serio proprio quando ammette i problemi:
 - differenza fra installazione temporanea, presidio periodico e struttura permanente.
 
 Nessuno di questi punti va risolto nel testo con una frase. Sono parte del programma di ricerca.
+
+## Scelte contemporanee rispetto alla fonte
+
+PUB-S01 descrive una webcam e nomina «Dolby Stereo Spectral Recording». Restano nella ricostruzione storica. Per il prototipo proponiamo invece ripresa disattivata per impostazione iniziale, attivabile soltanto per attività definite e dopo verifica della gestione dei dati, e audio controllato senza prescrivere il sistema Dolby della fonte. Il PDF non specifica una webcam sempre accesa: non attribuirgli questa caratteristica. Sono proposte attuali, non correzioni retroattive.
