@@ -1,0 +1,64 @@
+\documentclass[12pt,a4paper]{article}
+
+% ─── Pacchetti essenziali ─────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{hyperref}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    citecolor=black,
+    urlcolor=blue!60!black,
+    pdftitle={Peeragogy on Music},
+    pdfauthor={Fabrizio~Terzi},
+    pdfsubject={Civic Music Learning Point}
+}
+
+% ─── Metadati documento ──────────────────────────────────────
+\title{\textbf{Peeragogy on Music}\\[0.5em]
+    \large From a 2013--2016 Concept to a Civic Music Learning Point}
+
+\author{Fabrizio Terzi\\[0.3em]
+    \small \textsf{Pyragogy / Peeragogia}}
+
+\date{Draft --- \today}
+
+\begin{document}
+
+\maketitle
+
+% ─── Abstract PROVVISORIO ────────────────────────────────────
+\begin{abstract}
+This document traces the arc of \emph{Il Portale}, a concept for a civic music
+learning point first proposed between 2013 and 2016 as a submission to the
+Free Technology Guild journal.  The original proposal combined a physical
+drop-shaped audio---visual structure, a digital keyboard, an OLED display,
+and networked learning resources into a single accessible station for music
+education.  The present work reconstructs the historical concept, situates it
+within the peeragogical framework that informed its design, and documents the
+ongoing exploration of the Tea Pavilion in Parco Caprotti, Bergamo, as a
+candidate physical host.  No experimental results are reported; this is a
+position and research-through-design document written to scaffold collaborative
+development and critical review.
+\end{abstract}
+
+% ─── Contenuto ───────────────────────────────────────────────
+\include{sections/01_origin}
+\include{sections/02_concept}
+\include{sections/03_learning_point}
+\include{sections/04_caprotti}
+\include{sections/05_future_work}
+
+% ─── Bibliografia ────────────────────────────────────────────
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}
