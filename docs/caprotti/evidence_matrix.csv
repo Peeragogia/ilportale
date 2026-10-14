@@ -1,0 +1,12 @@
+id,claim,status,confidence,sources
+CAP-E001,Learning City Point in original project,OBSERVED,HIGH,S00
+CAP-E002,Original site = Parco Caprotti,OBSERVED,HIGH,S00
+CAP-E004,Small glazed pavilion,OBSERVED,HIGH,S02-S08
+CAP-E005,Neo-Renaissance style,OBSERVED,HIGH,S04
+CAP-E006,Date 1890 sources,OBSERVED,HIGH,"S02,S03,S10"
+CAP-E007,Date 1891 source,OBSERVED,MEDIUM,S05
+CAP-E010,Roof balustrade,OBSERVED-VISUAL,HIGH,"S04,S06,S08"
+CAP-E011,External stair,OBSERVED-VISUAL,HIGH,S06
+CAP-E012,Tall arched glazed bay,OBSERVED-VISUAL,HIGH,"S06,S07"
+CAP-E017,Exact exterior dimensions,UNKNOWN,HIGH,
+CAP-E018,Exact interior dimensions,UNKNOWN,HIGH,

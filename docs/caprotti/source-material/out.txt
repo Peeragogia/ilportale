@@ -1,0 +1,193 @@
+             FTG - The Peeragogical Journal paper • Gen 2016 • Vol. XII, No. 1
+
+
+  FREE TECHNOLOGY GUILD
+   Open Educational Resourse
+   PEERAGOGY ON MUSIC
+                                         Fabrizio Terzi∗
+
+                                     PEERAGOGY IN ACTION
+                                         peeragogy.org
+
+                                         January 1, 2016
+
+
+                                            Abstract
+
+   The PEERAGOGY journal intend to act as on-line editorial open space to
+   contributions from scholars belonging systems thinking. The setting of the
+   journal is intended to be explicitly inter-trans-disciplinary, and expression
+   of a ”mesh” vision and attentive in identify and describe the processes of
+   co-generation and recursion theory in practice learning. In addition, those
+   who are doing their project goals, peeragogy in action journal is designed
+   as a space dedicated to epistemology and the study of complex systems,
+   with a special focus on theoretical frameworks, models, and field research
+   on the specific areas of Education. The intention is to provide a point of
+   reference for researchers publishing in value, and to position themselves in
+   the context of the current debate science and culture. Go then specified that
+   the jurnal is a monthly recap and have a frequency of publication monthly
+   (or) half-yearly, and that his numbers will from time to time devoted to a
+   specific theme, hosting works signed by scholars from different countries,
+   albeit with a special care in giving voice to those who are the realities of
+   research and experimentation about peeragogy in action on the web.
+
+
+
+
+∗ Thanks all peeragogues peeragogy.org
+
+
+
+
+                                                                                   1
+               FTG - The Peeragogical Journal paper • Gen 2016 • Vol. XII, No. 1
+
+
+                  Il Portale                          Durante i momenti di non esecuzione musicale,
+                                                      la combinazione della struttura e schermo Oled
+Inventor: Fabrizio Terzi ,                            convertibile a foto e video gallery direttamente
+Freelance Resercher @                                 gestiti dall’unit di calcolo principale o da un
+BergamoHub Italy (IT)                                 server.
+E-mail: siar@member.fsf.org
+                                                                 References Cited:
+Assignee: Fabrizio Terzi
+Appl. N:                                                 • The Paragogy V3.3
+Filed: Gen. 20, 2013
+                                                         • Peeragogy.org
+
+                IL PORTALE
+Descrizione del modello di utilizzo avente per           To all whom it may concern:
+                     titolo:                          Be it known that I, Fabrizio Terzi, citizens, of
+                 ”Il Portale”                         Italy and residing in Bergamo,I design a cer-
+  l modello ornamentale presentato un omaggio         tain new and useful Improvement in a Music
+Iamo.
+  alla musica e alla tradizione della citt di Berg-
+      La loro unione apre un portale verso nuovi
+                                                      Education field, of which the following is a spec-
+                                                      ification.
+mondi per l’insegnamento musicale; in cui la cre-
+ativit si fonde con la Peeragogia e nuve metodolo-               Project Abstract:
+gie di apprendimento nel mondo digitale. La
+simultaneit delle stimolazioni audio-video pu                      Learning City Point
+essere sperimentata durante l’esecuzione di un
+brano usufruendo delle migliori tecnologie di
+riproduzione sensoriale audio-video.
+                                                             Field of the Initiative:
+                       ...                              Background and Information:
+Durante i periodi di non utilizzo, la tastiera pu
+essere convertita in mensola d’appoggio diven-                        SUMMARY:
+tando modello architettonico ornamentale. Le
+ridotte dimensioni di tutta la struttura, infatti,                    Description:
+rendono il modello pratico nei locali ristretti
+                                                      I. Forma parte integrante del modello presen-
+dove la ridotta metratura rende di fatto svan-
+                                                      tato un impianto di diffusione audio-video per lo
+taggiosa un’esecuzione musicale live amplificata
+                                                      studio musicale e la riproduzione artistica com-
+o l’esposizione di pianoforte acustico.
+                                                      puterizzata in formati digitali. La simultaneit
+                       ...                            percettiva dellesecutore e la combinazione video
+La diffusione in rete di tutorial musicali (OER)      su schermi Oled, 3D e Plasma, uniscono unesi-
+e un marketplace di tutoraggio, consente fin          genza esplorativa di studio musicale sonoro con
+da oggi, la stimolazione simultanea audio-video       linterazione video di stimoli visivi creativi. Tale
+durante il processo d’apprendimento degli stru-       unione si converte a modello di design ornamen-
+menti e del linguaggio musicale.                      tale architettonico nei periodi di non utilizzo. II.
+                                                      Lunita digitale di riproduzione MIDI su tastiera
+                       ...                            elabora e riproduce sequenze audio in forma par-
+Con l’integrazione di una web-cam, il segnale         allela rispetto ai processi di elaborazione grafica
+video pu essere trasmesso e riprodotto su un al-      gestiti dalle unit di calcolo dedicate. Le stesse,
+tro sistema di riproduzione digitale compatibile,     incaricate di gestire i traffici dati di interazione
+e percepito dallesecutore in tempo reale sullo        Web, gestiscono i contenuti della galleria mul-
+schermo anche a grande distanza.                      timediale nei periodi di standby del modello.
+                                                      Pertanto lo stesso caratterizzato dalle seguenti
+                       ...                            rivendicazioni:
+
+2
+            FTG - The Peeragogical Journal paper • Gen 2016 • Vol. XII, No. 1
+
+
+               BRIEF DESCRIPTION OF THE DRAWINGS:
+
+          Sistema di riproduzione digitale Audio-Video caratterizzato da:
+
+
+
+
+                                        Figure 1: Drawing
+
+
+Modello comprendente di:                               input e output MIDI e controllo sequenze
+1. Struttura a forma di goccia contenente              video Tav:1 N-3.
+   limpianto di diffusione audio e ripro-            4. Sistema a pedalina digitale comprendente
+   duzione Dolby Stereo Spectral Recording.             in Tav:1 N-5.
+   Tav:1, N:4.
+                                                            • risonanza o forte N: 8.
+2. Schermo Oled, 3D o plasma o qualsiasi
+   tecnologia meglio performante e meglio                   • Tonale o sordina N: 7.
+   gestibile dalla scheda audio nellunit di cal-            • Corda o piano N: 6.
+   colo principale Tav:1 N-2.
+                                                            • Mensola dappoggio utilizzata du-
+3. III. Calcolatore elettronico comprendente                  rante i momenti di non utilizzo, Tav:1
+   gestione qualit trasferimento data sound                   N-9.
+
+
+
+
+                                                                                                  3
+    FTG - The Peeragogical Journal paper • Gen 2016 • Vol. XII, No. 1
+
+
+
+
+                          Figure 2: Lateral view
+
+
+
+
+4
+              FTG - The Peeragogical Journal paper • Gen 2016 • Vol. XII, No. 1
+
+
+                  Status                         (S.I. A.R.) project. Graphics Designer and Ex-
+                                                 perience Engineer.
+Seed project proposal for BergamoHub as a
+member project itself.
+                                                 Recruitment
+Name:                                            We are recruiting project Team Leader to submit
+                                                  project descriptions like this one to the FTG, as
+”IL Portale” Peeragogy on Music                  “Seed Projects”.
+
+Peeragogy.org
+                                                          Stage of the venture
+Free Technology Guild Working Group
+                                                 Date of founding
+One Line Summary:
+                                                 Milestones achieved
+What is the proposed solution?
+                                                 Milestones yet to be achieved
+We’ll create opportunities for participants to
+learn music modules in a peeragogical style.                 Support required
+
+How will you make the change?                    Who else do you need on your team
+                                                 to make the project a success?
+Firmato ”Learning City Point”.
+                                                 We need to recruit more interested and active
+                                                 participants who can assume the roles needed
+Location                                         for the FTG to thrive.
+Parco Comunale ”dei Caprotti” Bergamo Via
+Tasso.                                           Are any of these people in the Peer-
+                                                 agogy Network?
+What is your value proposition?                  Possibly. Currently, we are sharing responsi-
+                                                 bilities for Red and Blue teams. The FTA is
+Team: bio, expertise, and role(s)                currently working on its own revised plans for
+          in the group                           how to network with those people for purposes
+                                                 of “coordination” (at least).
+Member 1 -Progect Lead-
+Fabrizio Terzi, GNU Apprentice and Director      What in general would you do with
+of the Sensory Immersion Augmented Reality       funding or volunteer support?
+
+
+
+
+                                                                                                 5
+

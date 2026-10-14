@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Caprotti Reference Manifest",
+  "type": "object",
+  "properties": {
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "source_type",
+          "filename_or_url",
+          "view_class",
+          "evidence_status"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "source_type": {
+            "enum": [
+              "public-web",
+              "user-photo",
+              "archive",
+              "drawing",
+              "measurement"
+            ]
+          },
+          "filename_or_url": {
+            "type": "string"
+          },
+          "source_page": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "view_class": {
+            "type": "string"
+          },
+          "evidence_status": {
+            "enum": [
+              "OBSERVED",
+              "INFERRED",
+              "UNKNOWN"
+            ]
+          },
+          "confidence": {
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH"
+            ]
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "references"
+  ]
+}
