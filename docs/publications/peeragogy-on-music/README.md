@@ -16,6 +16,26 @@ dal concept originale 2013–2016 al Civic Music Learning Point contemporaneo.
 3. **Niente claim nuovi presentati come storici** — ogni affermazione nuova è marcata come tale.
 4. **Versioni**: il documento evolve per versioni, non in un unico passo.
 
+## Arco narrativo
+
+L'arco editoriale del documento segue cinque strati, ognuno con una sezione dedicata:
+
+```
+2013/2016 concept          → sections/01_origin.tex
+     ↓
+Original technical object  → sections/02_concept.tex
+     ↓
+Learning City Point       → sections/03_learning_point.tex
+     ↓
+Caprotti 2026             → sections/04_caprotti.tex
+     ↓
+Future work               → sections/05_future_work.tex
+```
+
+Ogni strato è concettualmente distinto: il passaggio dal secondo al terzo
+separa *ciò che l'oggetto è* (stazione tecnica) da *ciò che diventa nella
+città* (destinazione civica di apprendimento).
+
 ## Struttura
 
 ```
