@@ -27,3 +27,22 @@ Questo file serve a impedire che un'idea plausibile diventi, per ripetizione, un
 | Il modello Blender valida acustica e accessibilità | NON DIMOSTRATO | nessuna misura calibrata presentata | distinguere modello proporzionale, rilievo e verifiche specialistiche |
 
 | Il Cerchio di Gesso pubblica attività del Giardino dell’anima e un evento 2026 alla Sala del té | SUPPORTATO COME PROGRAMMA | PUB-S19 | verificare disponibilità e usi attuali con i responsabili; nessuna collaborazione col Portale già concordata |
+
+## Claim decisivi aggiunti nella v0.5
+
+| ID | Affermazione | Stato | Evidenza o verifica necessaria |
+|---|---|---|---|
+| V05-C01 | Il contributo è l'integrazione di gesto, forma, scambio e continuità civica | TESI PROGETTUALE | Cap.1–2; confronto mirato, nessun primato universale |
+| V05-C02 | Pianoforti pubblici e Reactable precedono il concept | DOCUMENTATO | conc_streetpianos, conc_reactable, conc_jorda2007 |
+| V05-C03 | La forma a goccia facilita accesso e reciprocità | IPOTESI | Prototipo volumetrico, utenti e confronto orientamenti |
+| V05-C04 | Catena audio indipendente da cloud e UI | REQUISITO PROPOSTO | TR1/E1, TR3/E3; non implementazione attestata |
+| V05-C05 | Mediana15ms/p95 20ms/scarto5ms | OBIETTIVO PROPOSTO | TR2/E2, misura fisica end-to-end; nessun dato acquisito |
+| V05-C06 | Blocco128 campioni a48kHz dura2,67ms | CALCOLO | 128/48000×1000; non latenza totale |
+| V05-C07 | Log7giorni, timeoutAI8s, inattività120+30s | PARAMETRI CANDIDATI | Collaudo e governance prima dell'uso |
+| V05-C08 | Studi musicali dimostrano efficacia del Portale | NON DIMOSTRATO | Review non valida componente digitale; nessun pilota svolto |
+| V05-C09 | Suonare insieme causa coesione urbana | NON DIMOSTRATO | Studi contestuali discordanti; no generalizzazione |
+| V05-C10 | Pilota36adulti/18coppie è sufficiente per efficacia | NON DIMOSTRATO | Campione operativo di fattibilità, nessun power analysis |
+| V05-C11 | ScenariA/B/C costano18432/42912/90360euro | STIME INTERNE PARZIALI | Aritmetica esplicita, assunzioni e voci escluse; non preventivi |
+| V05-C12 | ProgrammaCerchioGesso conferma spazio disponibile | NON DIMOSTRATO | PUB-S19 documenta programma; accordi da ottenere |
+| V05-C13 | WCAG certifica accessibilità dell'intera installazione | FALSO | des_wcag22 riguarda interfaccia digitale; rilievo/prove fisiche necessari |
+| V05-C14 | Un LLM concorrente è stato superato | NON VALUTATO | Nessun output concorrente o score disponibile; protocollo predisposto |

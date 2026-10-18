@@ -1,0 +1,38 @@
+\chapter{Requisiti trasversali e percorso di verifica}\label{app:requirements}
+
+La matrice rende rintracciabile il passaggio dalla promessa alla prova. Gli identificatori R01--R12 sono requisiti trasversali di questa edizione, non certificazioni. Le soglie quantitative dei capitoli specialistici restano candidate: prima della sperimentazione il gruppo di progetto deve congelare configurazione, procedure, denominatori e responsabilità in una scheda di collaudo versionata.
+
+\small
+\begin{longtable}{P{0.07\linewidth}P{0.25\linewidth}P{0.29\linewidth}P{0.27\linewidth}}
+\toprule
+ID & Requisito proposto & Prova e traccia richiesta & Condizione di decisione \\\midrule
+\endfirsthead
+\toprule ID & Requisito proposto & Prova e traccia richiesta & Condizione di decisione \\\midrule
+\endhead
+R01 & Il primo suono non richiede account, rete o AI. & Avvio da macchina spenta con rete scollegata; percorso osservato e log locale tecnico. & Bloccare apertura se il nucleo musicale dipende da autenticazione o rete. \\\addlinespace
+R02 & Il gesto conserva una risposta musicale controllabile. & Misura end-to-end con catena e carico dichiarati; distribuzione di latenza e prove di note bloccate. & Confrontare soglie del capitolo tecnico; correggere prima di esporre al pubblico. \\\addlinespace
+R03 & Una persona può uscire senza lasciare contenuti alla successiva. & Uscita volontaria, timeout, crash e riavvio; controllo di memoria e archivi. & Nessun contenuto di sessione deve ricomparire; conservazione solo per percorso esplicito. \\\addlinespace
+R04 & L'ascolto condiviso è una scelta reversibile. & Verifica di avvio silenzioso, passaggio cuffia/diffusione e controllo livello; osservazione sul sito. & Sospendere diffusione se compromette altri usi o non rispetta condizioni concordate. \\\addlinespace
+R05 & Due partecipanti possono contribuire e scambiarsi ruolo. & Attività a coppie; codifica di contributi, turni, aiuti e posizione fisica. & Rivedere spazio o attività se il secondo rimane sistematicamente spettatore. \\\addlinespace
+R06 & Accessibilità verificata sull'intera catena d'uso. & Arrivo, avvicinamento, postura, comando, feedback e uscita con utenti dalle esigenze diverse. & Un'interfaccia accessibile non compensa un percorso o una struttura inaccessibili. \\\addlinespace
+R07 & Il materiale distingue autore, licenza e provenienza. & Audit del pacchetto offline e dei contributi pubblicati; scheda per ciascuna risorsa. & Non pubblicare contenuti senza diritto e condizioni di riuso verificati. \\\addlinespace
+R08 & L'effetto educativo è distinto dall'attrazione. & Compito musicale iniziale, successivo e differito senza supporto; abbandoni e aiuti registrati. & Non affermare apprendimento sulla sola permanenza o soddisfazione. \\\addlinespace
+R09 & La collocazione è consentita e compatibile. & Sopralluogo, disponibilità documentata, verifica degli usi e dei passaggi autorizzativi. & Nessuna installazione pubblica sulla sola base del render o della proposta editoriale. \\\addlinespace
+R10 & Ogni ora di apertura ha una responsabilità operativa. & Calendario, referente, procedura guasti, disponibilità dei ricambi e risorse impegnate. & Ridurre apertura se manca copertura effettiva; dichiarare servizio assistito. \\\addlinespace
+R11 & Il costo include cura e continuità. & Distinta, preventivi, ore, sostituzioni e scenari di utilizzo; confronto alternativa semplice. & Ridimensionare se il costo sostenibile dipende da lavoro non riconosciuto. \\\addlinespace
+R12 & Il valore aggiunto è confrontabile. & Protocollo uguale per alternativa semplice e Portale, con dose di facilitazione dichiarata. & Separare beneficio del programma, del facilitatore e della specifica tecnologia. \\
+\bottomrule
+\end{longtable}
+\normalsize
+
+\section{Dati mancanti che cambiano una decisione}
+I dati da ottenere per primi sono quelli capaci di cambiare la configurazione: geometria e accessi reali del sito; disponibilità e usi concordabili; condizioni elettriche e ambientali; possibilità di ascolto; bisogni dei partecipanti; persone e risorse per il presidio. La raccolta di questi elementi precede un disegno costruttivo definitivo. La provenienza deve accompagnare ciascun parametro: misura diretta, documento, stima, convenzione o ipotesi.
+
+La storiografia mantiene una propria agenda: documenti edilizi del Padiglione, attribuzione, trasformazioni, atti relativi al passaggio del giardino e quadro specifico della tutela. La data 1890 riportata nel resoconto locale \cite{primabergamo2024}
+contrasta con il 1891 registrato nella fonte PUB-S07 del dossier:
+la datazione resta aperta e non viene risolta per maggioranza delle fonti. Le fonti archivistiche localizzate nell'inventario non devono essere trattate come atti integralmente consultati.
+
+\section{Materiali per una revisione riproducibile}
+Il repository contiene sorgente LaTeX, bibliografia, illustrazione originale con provenienza, note di ricerca per ciascun ambito e protocollo comparativo. La valutazione va riferita a un commit preciso: il ramo principale può cambiare. Il revisore deve indicare pagine, requisiti e fonti a sostegno di ogni punteggio; i criteri che non può valutare vanno marcati come tali.
+
+Il confronto con un altro LLM è predisposto come procedura, non presentato come risultato. Richiede un brief comune, un corpus congelato, condizioni di ricerca dichiarate, output indipendenti e valutatori che non conoscano, ove possibile, l'autore della redazione. Una buona compilazione dimostra integrità editoriale, non superiorità scientifica o fattibilità fisica. La griglia completa e il prompt per il concorrente sono nella cartella \texttt{review/}.

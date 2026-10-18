@@ -1,48 +1,84 @@
-\documentclass[12pt,a4paper]{article}
+\documentclass[11pt,a4paper,oneside]{report}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage[provide=*,italian]{babel}
-\usepackage{geometry}
-\geometry{margin=2.5cm}
-\usepackage{microtype}
-\usepackage{xcolor}
-\usepackage{graphicx}
-\usepackage{booktabs}
+\usepackage[a4paper,left=25mm,right=23mm,top=24mm,bottom=25mm,headheight=15pt]{geometry}
+\usepackage{microtype,graphicx,xcolor,booktabs,tabularx,longtable,array,amsmath}
+\usepackage{enumitem,titlesec,fancyhdr,caption,float,tikz}
+\usetikzlibrary{arrows.meta,positioning,calc,fit,shapes.geometric}
 \usepackage[numbers,sort&compress]{natbib}
-\usepackage{xurl}
-\usepackage{hyperref}
-\hypersetup{colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue!60!black,
-pdftitle={Il Portale - Peeragogy on Music},pdfauthor={Fabrizio Terzi},
-pdfsubject={Ricostruzione del progetto e proposta di apprendimento musicale civico}}
-\setlength{\emergencystretch}{2em}
-\title{\textbf{Il Portale}\\[0.4em]\large Peeragogy on Music\\
-Musica, apprendimento condiviso e spazio pubblico\\
-Dal concept 2013--2016 a Parco Caprotti}
-\author{Fabrizio Terzi\\[0.3em]\small\textsf{Pyragogy / Peeragogia}}
-\date{Bozza italiana v0.4 --- 18 ottobre 2026}
+\usepackage{xurl,hyperref}
+\definecolor{PortaleInk}{HTML}{173C44}
+\definecolor{PortaleAccent}{HTML}{A2613B}
+\definecolor{PortalePale}{HTML}{EDF2F1}
+\hypersetup{colorlinks=true,linkcolor=PortaleInk,citecolor=PortaleInk,urlcolor=PortaleInk,pdftitle={Il Portale: una infrastruttura civica per imparare musica},pdfauthor={Fabrizio Terzi},pdfsubject={Monografia tecnica di progetto v0.5}}
+\titleformat{\chapter}[display]{\normalfont\color{PortaleInk}}{\sffamily\small IL PORTALE\quad /\quad\chaptertitlename\ \thechapter}{8pt}{\Huge\bfseries\raggedright}
+\titlespacing*{\chapter}{0pt}{0pt}{24pt}
+\titleformat{\section}{\Large\bfseries\color{PortaleInk}}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{0.7em}{}
+\setcounter{secnumdepth}{2}
+\setcounter{tocdepth}{1}
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{0pt}
+\setlength{\emergencystretch}{3em}
+\setlist[itemize,enumerate]{nosep,leftmargin=*,topsep=6pt}
+\setlist[description]{style=unboxed,leftmargin=0pt,labelindent=0pt,labelwidth=0pt,labelsep=0.6em,font=\bfseries,topsep=6pt,itemsep=5pt}
+\captionsetup{font=small,labelfont=bf}
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\small\sffamily IL PORTALE}
+\fancyhead[R]{\small\sffamily Ricerca e progetto / v0.5}
+\fancyfoot[R]{\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[R]{\thepage}\renewcommand{\headrulewidth}{0pt}}
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\projectnote}[1]{\begin{quote}\small\color{PortaleInk}#1\end{quote}}
 \begin{document}
-\maketitle
-\begin{abstract}
-Il Portale propone un incontro con la musica dentro la vita quotidiana
- della città: una tastiera accessibile, una forma riconoscibile, risorse
- per esplorare e occasioni per imparare insieme. Il concept documentato
- nel 2013--2016 indicava già Parco Caprotti a Bergamo. Riprenderlo oggi
- significa sviluppare il rapporto tra oggetto, persone e luogo, conservando
- la forza dell'intuizione e dandole strumenti per diventare concreta.
- Questa proposta ricostruisce il disegno originale, ne sviluppa le
- possibilità tecniche ed educative e considera il Padiglione del Tè
- come sede candidata. L'apprendimento tra pari, i materiali aperti e
- una tecnologia accessibile orientano il progetto. La ricerca sul luogo,
- la modellazione e una futura prova con il pubblico dovranno aiutarci
- a capire come realizzarlo e quale valore possa offrire alla città.
-\end{abstract}
-\input{sections/01_origin}
-\input{sections/02_concept}
-\input{sections/03_learning_point}
-\input{sections/04_caprotti}
-\input{sections/05_future_work}
+\begin{titlepage}
+\color{PortaleInk}
+{\sffamily\small PYRAGOGY / PEERAGOGIA\hfill RICERCA DI PROGETTO}\par
+\vspace{15mm}
+{\fontsize{44}{48}\selectfont\bfseries Il Portale}\par
+\vspace{5mm}
+{\LARGE Una infrastruttura civica\\per imparare musica}\par
+\vspace{5mm}
+{\large Forma, interazione, apprendimento tra pari\\e vita pubblica a Parco Caprotti}\par
+\vspace{9mm}
+\includegraphics[width=\linewidth]{figures/portale-originale-2016.jpg}\par
+\vspace{5mm}
+{\small Il disegno originale: un luogo raccolto attorno al gesto musicale.\\Documento di Fabrizio Terzi, 2016, p.\ 3; immagine inalterata.}\par
+\vfill
+{\large Fabrizio Terzi}\par
+\vspace{3mm}
+{\sffamily Monografia tecnica v0.5 / 18 ottobre 2026}\par
+{\small Dal concept documentato 2013--2016 a una proposta verificabile.\\Edizione per revisione critica: progetto, specifiche e protocollo di prova.}
+\end{titlepage}
+\pagenumbering{roman}
+\chapter*{Tesi e statuto del documento}
+\addcontentsline{toc}{chapter}{Tesi e statuto del documento}
+Il Portale propone di rendere l'apprendimento musicale una possibilità ordinaria dello spazio pubblico: un luogo riconoscibile in cui il gesto individuale possa diventare ascolto reciproco, esplorazione e conoscenza condivisa. La forma a goccia raccoglie tastiera, immagine e suono; il programma educativo e la gestione civica devono trasformare questa presenza in una pratica durevole.
+
+La tesi di questa monografia è che il valore del progetto vada cercato nella qualità delle relazioni fra cinque elementi: forma abitabile, risposta musicale immediata, possibilità di apprendere tra pari, risorse riutilizzabili e responsabilità pubblica della cura. Nessuno di questi elementi, isolatamente, prova un primato. La loro integrazione costituisce il contributo progettuale da mettere alla prova.
+
+Il documento sviluppa una proposta di sistema, ne confronta gli antecedenti, specifica requisiti, alternative, prove e condizioni di sostenibilità. Parco Caprotti è indicato nel documento originale; il Padiglione del Tè è una candidatura contemporanea da discutere con chi ne regola e anima gli usi. Non sono qui presentati un'installazione realizzata, un accordo con gli enti, risultati sperimentali o una certificazione tecnica.
+
+\textbf{Come leggere le affermazioni.} I fatti documentali hanno una fonte citata. Le scelte progettuali definiscono una configurazione proposta. Le soglie numeriche e i budget sono assunzioni da sottoporre a collaudo o a preventivo, salvo esplicita indicazione contraria. Le ipotesi educative e civiche richiedono dati futuri. Una simulazione geometrica rende discutibile una soluzione; non ne dimostra acustica, sicurezza o efficacia.
+
+\textbf{Responsabilità editoriale.} Il concept e la direzione del progetto sono di Fabrizio Terzi. Questa edizione è stata redatta con assistenza ChatGPT e sei agenti specialistici, con integrazione e revisione interna. Pi ha revisionato la precedente v0.3; la sua approvazione non viene estesa automaticamente a questo testo. Il protocollo allegato consente una nuova revisione indipendente e un confronto fra redazioni LLM. Non è stata svolta una peer review scientifica esterna della v0.5.
+
+\tableofcontents
+\clearpage\pagenumbering{arabic}
+\input{sections/01_thesis}
+\input{sections/02_originality}
+\input{sections/03_design}
+\input{sections/04_engineering}
+\input{sections/05_learning}
+\input{sections/06_city}
+\input{sections/07_delivery}
+\input{sections/08_synthesis}
+\appendix
+\input{sections/09_requirements}
 \bibliographystyle{plainnat}
 \bibliography{references}
 \end{document}
-

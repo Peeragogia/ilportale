@@ -59,3 +59,25 @@ Gli ID PUB-S01–PUB-S19 appartengono soltanto alla pubblicazione. Il dossier te
 - PUB-S08: inventario consultato direttamente, pagina PDF 44, documento 1435, faldone 16; richiedenti Fratelli Caprotti e Ghisalberti Attilio, 1947. È registrata la manifestazione di volontà di donazione, non verificato il trasferimento effettivo. Pagina PDF 65: documenti 2075 (Luigi Angelini, 1948) e 2076 (Soprintendenza ai Monumenti della Lombardia, 1950), faldone 30. Non attribuiscono il progetto originario del Padiglione ad Angelini. Gli atti originali restano da consultare.
 - PUB-S19 — https://www.ilcerchiodigesso.org/il-giardino-dellanima/ — pagina consultata il 18 ottobre 2026. La proposta deve confrontarsi con le attività e con gli interlocutori già presenti; nessun accordo con Il Portale è documentato.
 - PUB-S01: immagine di pagina 3 estratta direttamente, senza alterazioni, in `figures/portale-originale-2016.jpg`; provenienza e hash in `figures/README.md`.
+
+## Estensione v0.5 — fonti specialistiche
+
+Gli ID storici PUB-S01–PUB-S19 restano stabili. Per le nuove fonti sono usate direttamente le chiavi BibTeX, senza rinumerare il dossier tecnico. Le note `*_sources.md` registrano verifica, contenuto sostenuto e limiti. `references.bib` è la bibliografia canonica; i frammenti `research/*.bib` documentano le consegne degli agenti.
+
+Corrispondenze deduplicate: `learn_weatherly` → `weatherly2025` (PUB-S18); `learn_unesco` → `unesco_oer2019` (PUB-S16); `city_mai` → `mai_inventario` (PUB-S08); `city_vincolo` → `bergamo_vincolo118` (PUB-S02); `city_cerchio` → `cerchio2026` (PUB-S19).
+
+| Chiave | Nota di verifica | Uso |
+|---|---|---|
+| conc_streetpianos | concept_sources.md | Pianoforti pubblici come antecedente, non dato di efficacia indipendente |
+| conc_reactable, conc_jorda2007 | concept_sources.md | Interfaccia tangibile e visualizzazione musicale |
+| conc_learningcity | concept_sources.md | Organizzazione della città che apprende |
+| conc_reeves2005 | concept_sources.md | Ruolo dello spettatore nell'interazione pubblica |
+| des_wcag22 | design_sources.md | Criteri digitali, non certificazione fisica |
+| des_who2022 | design_sources.md | Progettazione ascolto, non limite specifico autorizzato al parco |
+| eng_midi, eng_webmidi, eng_webaudio | engineering_sources.md | Protocolli, permessi e API; nessuna garanzia prestazionale |
+| eng_jack, eng_pipewire, eng_fluidsynth | engineering_sources.md | Vincoli realtime e candidati implementativi |
+| learn_peeragogy | learning_sources.md | Definizione del movimento, non prova di efficacia |
+| learn_kirschner, learn_baier | learning_sources.md | Evidenze contestuali anche discordanti, non generalizzate al progetto |
+| learn_ccby | learning_sources.md | Licenza proposta e condizioni, non licenza automatica di tutto il repository |
+
+PUB-S18: la selezione della review esclude lavori focalizzati su musica digitale o apprendimento virtuale. La monografia non la usa come prova dell'efficacia digitale o AI.

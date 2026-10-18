@@ -1,0 +1,347 @@
+\chapter{Architettura tecnica: uno strumento pubblico che risponde}\label{sec:engineering}
+
+La promessa tecnica del Portale si misura nel tempo che passa fra un gesto
+e la sua risposta. Se una persona preme un tasto e deve aspettare una
+connessione, un'autorizzazione o un suggerimento generativo, l'invito
+musicale si è già incrinato. Il requisito fondante è quindi una catena
+suonabile locale, disponibile senza account, distinta dai servizi che
+arricchiscono l'esperienza. Questa sezione propone un'architettura da
+prototipare e collaudare: nessun valore prestazionale qui indicato è una
+misura ottenuta su un Portale costruito.
+
+Nel documento originale tastiera MIDI, calcolo, immagini, pedali,
+diffusione sonora e collegamento video appartengono già allo stesso
+oggetto \cite[pp.~2--3]{terzi_peeragogy_2016}. L'evoluzione proposta ne
+preserva l'unità percettiva attraverso una separazione interna delle
+responsabilità. Il dispositivo deve continuare a essere uno strumento
+anche quando il catalogo non si aggiorna, la pagina grafica si riavvia o
+un servizio remoto smette di rispondere.
+
+\section{Tre piani, responsabilità verificabili}
+
+Il \emph{piano musicale} comprende acquisizione MIDI, stato delle note,
+sintesi, mixer e uscita audio. Il \emph{piano dell'esperienza} comprende
+interfaccia, attività, visualizzazioni e coordinamento della sessione.
+Il \emph{piano di gestione} comprende aggiornamenti, diagnostica,
+inventario e accesso del manutentore. Il primo non attende gli altri due;
+la rete appartiene principalmente al terzo. Un guasto grafico non deve
+bloccare una nota, e un aggiornamento non deve cambiare timbro mentre
+qualcuno sta suonando.
+
+\begin{figure}[htbp]
+\centering
+\resizebox{0.97\linewidth}{!}{%
+\begin{tikzpicture}[
+  box/.style={draw,rounded corners=2pt,align=center,text width=2.8cm,minimum height=1.05cm,font=\small},
+  flow/.style={-{Stealth[length=2mm]},thick},
+  aux/.style={-{Stealth[length=2mm]},dashed}]
+\node[box] (keys) {Tastiera e pedali\\Ingressi MIDI};
+\node[box,right=1.6cm of keys] (core) {Nucleo musicale\\Stato e sintesi};
+\node[box,right=1.6cm of core] (out) {Mixer e interfaccia\\Cuffie / diffusori};
+\node[box,below=1.8cm of core] (ui) {Interfaccia locale\\Attività e sessione};
+\node[box,left=1.6cm of ui] (content) {Contenuti locali\\Timbri e risorse};
+\node[box,right=1.6cm of ui] (remote) {Servizi opzionali\\Tutor / AI};
+\node[box,above=1.4cm of core] (manage) {Gestione separata\\Diagnostica e rilasci};
+\draw[flow] (keys) -- (core);
+\draw[flow] (core) -- (out);
+\draw[aux] (content) -- node[above,font=\scriptsize]{lettura} (ui);
+\draw[aux] (content.north) -- node[left,font=\scriptsize,align=center]{precarica\\fuori sessione} (core.south west);
+\draw[aux] (core.south) to[bend right=16] node[left,font=\scriptsize]{eventi} (ui.north);
+\draw[aux] (ui.north) to[bend right=16] node[right,font=\scriptsize]{comandi} (core.south);
+\draw[aux,<->] (ui) -- node[above,font=\scriptsize,align=center]{scelta\\esplicita} (remote);
+\draw[aux,<->] (manage) -- node[right,font=\scriptsize]{stato / manutenzione} (core);
+\end{tikzpicture}}
+\caption{Architettura proposta. La linea continua è il percorso
+locale gesto--suono; le linee tratteggiate sono scambi di controllo,
+contenuti o gestione. Nessun servizio remoto entra nel percorso audio.
+Le operazioni di manutenzione attendono una condizione di servizio
+appropriata. Lo schema non documenta un'implementazione esistente.}
+\label{fig:engineering-architecture}
+\end{figure}
+
+Per il banco prova si propone un computer Linux con connessioni cablate
+a tastiera e interfaccia audio, motore di sintesi nativo e interfaccia
+web in modalità chiosco. FluidSynth costituisce un candidato per una
+prima banca timbrica; PipeWire, eventualmente attraverso interfaccia
+JACK, un candidato per il grafo audio. Sono scelte da confrontare sul
+dispositivo reale, non dipendenze già adottate. Campioni, licenze,
+polifonia e uso di memoria devono essere verificati insieme. La
+documentazione FluidSynth richiede particolare attenzione alla
+coerenza della frequenza di campionamento e alla sua configurazione
+prima della creazione del sintetizzatore \cite{eng_fluidsynth}.
+
+Un servizio locale espone alla UI un protocollo piccolo e versionato:
+stato dello strumento, selezione di attività e timbro, richiesta di
+avvio o conclusione, volume entro limiti autorizzati. Non espone
+comandi di sistema. Gli eventi musicali vengono copiati verso la
+visualizzazione attraverso una coda limitata; quando questa è piena
+si possono perdere aggiornamenti grafici, mai trasformare la pressione
+dei tasti in un'attesa dell'interfaccia. Il servizio locale autentica
+la UI e verifica origine, tipo e intervallo dei comandi: ascoltare
+soltanto su loopback non basta come controllo di accesso.
+
+Una realizzazione interamente nel browser rimane un'alternativa utile
+per dimostrazioni trasferibili. La bozza W3C Web MIDI richiede un contesto sicuro e
+permessi gestiti dal browser; l'accesso ai messaggi System Exclusive
+è una capacità distinta, non necessaria per il nucleo proposto
+\cite{eng_webmidi}. Web Audio permette grafi di elaborazione e una
+preferenza di latenza interattiva, ma tale preferenza non certifica
+il ritardo effettivo \cite{eng_webaudio}. Compatibilità, avvio audio,
+riavvio del browser e funzionamento offline vanno provati sulla
+configurazione destinata all'installazione, senza generalizzare da
+un portatile di sviluppo.
+
+\section{MIDI, sintesi e significato del gesto}
+
+MIDI rappresenta eventi e controlli, non la registrazione del suono.
+Il nucleo deve gestire almeno note, intensità di attacco, canali e
+pedale di sostegno, con una mappa documentata per ciascun dispositivo.
+La tabella ufficiale distingue \emph{Note On}, \emph{Note Off} e
+messaggi di controllo; comprende inoltre \emph{All Sound Off} e
+\emph{All Notes Off}, che non vanno trattati come rimedi
+indistinti \cite{eng_midi}. La compatibilità richiede prove con note
+ribattute, accordi, rilascio sotto pedale e scollegamento del cavo.
+
+Il motore mantiene uno stato esplicito delle note per porta e canale.
+Un ingresso scomparso deve provocare un rilascio controllato delle
+voci interessate e il ripristino dei controlli. Una funzione
+\emph{silenzio} accessibile all'operatore agisce anche sul mixer:
+la sicurezza dell'uscita non dipende dalla corretta interpretazione
+di un messaggio MIDI. L'associazione tra pedali e funzioni viene
+collaudata; non si trasferiscono automaticamente le denominazioni
+dei tre pedali presenti nel disegno storico a qualsiasi tastiera.
+
+Nella parte eseguita in tempo reale non entrano richieste di rete,
+scritture su disco, caricamenti di campioni o attese dell'AI.
+La documentazione JACK esclude dai callback audio operazioni
+potenzialmente bloccanti, incluse allocazioni e lock ordinari
+\cite{eng_jack}. I contenuti vengono precaricati; cambi più pesanti
+avvengono tra attività, con una transizione dichiarata. I contatori
+di interruzioni audio e saturazione delle code vengono letti da
+un processo di diagnostica separato.
+
+\section{Latenza: budget da mettere alla prova}
+
+Si definisce latenza principale l'intervallo tra l'azione fisica
+misurata sul tasto e l'arrivo del primo segnale acustico utile
+all'ascoltatore. Un secondo indicatore, evento MIDI--uscita elettrica,
+serve a localizzare problemi, ma non comprende tutta l'esperienza.
+In prima approssimazione:
+\[
+L_{\mathrm{gesto-suono}} = L_{\mathrm{tasto}} + L_{\mathrm{MIDI}}
+ + L_{\mathrm{sintesi}} + L_{\mathrm{buffer}}
+ + L_{\mathrm{uscita}} + L_{\mathrm{aria}}.
+\]
+La somma aiuta a formulare il budget; non autorizza a sommare misure
+sovrapposte o percentili come se fossero indipendenti. Il collaudo
+decisivo misura il percorso completo.
+
+Come obiettivo iniziale, da discutere con musicisti e partecipanti,
+si propone una mediana non superiore a 15~ms e un percentile 95 non
+superiore a 20~ms nella configurazione d'ascolto dichiarata. Una
+prima allocazione progettuale di 20~ms riserva 5~ms a tasto e
+trasporto, 8~ms a sintesi e buffering, 4~ms a conversione e uscita,
+3~ms al percorso acustico. Sono quote da verificare, non proprietà
+garantite dei componenti. Lo scarto tra percentile 95 e mediana
+dovrebbe restare entro 5~ms: una risposta irregolare può rendere
+difficile il controllo anche con una media favorevole.
+
+A 48~kHz un blocco di 128 campioni dura circa 2,67~ms; questa
+divisione non dà la latenza totale. Il grafo può contenere più
+buffer e ulteriori ritardi; PipeWire documenta la propagazione
+delle latenze attraverso nodi e collegamenti \cite{eng_pipewire}.
+Le stime esposte da Web Audio non includono necessariamente tutte
+le fasi del gesto fisico \cite{eng_webaudio}. Per il primo test si
+preferiscono cuffie e diffusori cablati; una soluzione wireless
+richiederebbe una misura specifica dell'intera catena.
+
+Il protocollo proposto usa un riferimento fisico sincronizzato
+alla pressione e una registrazione dell'uscita, con almeno 1.000
+eventi distribuiti fra note singole, accordi e pedale. Riporta
+mediana, percentili 95 e 99, massimo, interruzioni e incertezza
+della misura. Va ripetuto a freddo e dopo due ore, durante animazioni,
+perdita di rete e diagnostica. Le prove non invasive con persone
+seguono il collaudo strumentale; nessuna misura elettrica improvvisata
+deve esporre chi suona a connessioni non sicure.
+
+\section{Sessioni senza account e stati comprensibili}
+
+L'avvio attraversa \emph{verifica}, \emph{disponibile},
+\emph{in uso}, \emph{conclusione} e \emph{ripristino}.
+Uno stato \emph{servizio ridotto} conserva le funzioni sane;
+\emph{fuori servizio} impedisce invece l'uso quando manca una
+condizione essenziale. Ogni passaggio ha una causa visibile.
+La galleria inattiva appartiene allo stato disponibile e cede
+immediatamente al primo gesto; non richiede di attraversare una
+sequenza promozionale.
+
+La sessione comincia localmente senza raccogliere nome o indirizzo.
+Il primo tasto può già suonare; la scelta di un'attività è successiva.
+Per il passaggio tra persone si propone un comando \emph{finisci} e,
+come ipotesi configurabile, un avviso dopo 120 secondi senza attività,
+seguito da 30 secondi per continuare. Il silenzio musicale non equivale
+all'abbandono: il timer considera interazioni, note e pedale, viene
+sospeso nelle attività guidate e deve essere validato con gli utenti.
+Prima di ripristinare una sessione non si interrompe bruscamente
+un suono ancora sostenuto; un operatore può intervenire esplicitamente.
+
+Il ripristino azzera controlli, bozze, stato della UI e privilegi
+temporanei; riporta il volume al livello di avvio collaudato. Il
+successivo visitatore non deve ritrovare conversazioni o creazioni
+precedenti. Due partecipanti possono condividere un'attività senza
+profili: per una seconda tastiera, le porte vengono identificate
+separatamente. Con una sola tastiera non si inferisce l'identità
+dell'esecutore dalla regione dei tasti.
+
+\section{Offline, contenuti e connessioni a distanza}
+
+Timbri, istruzioni essenziali e attività iniziali risiedono sul
+dispositivo. Un pacchetto di contenuti include identificativo,
+versione, autore, licenza, lingua e dipendenze. L'aggiornamento
+avviene a sessione conclusa, controllando integrità e provenienza;
+la versione precedente resta recuperabile. Un contenuto mancante
+non genera una schermata vuota: l'interfaccia propone un'attività
+già disponibile e segnala al manutentore il problema.
+
+La rete di gestione è separata dall'eventuale accesso ospiti.
+Il dispositivo non offre porte amministrative alla rete pubblica;
+l'assistenza usa accesso autenticato, privilegi minimi e operazioni
+registrate senza contenuti personali. Gli orologi possono essere
+sincronizzati per la gestione, ma il ritmo locale usa un clock
+monotono e il tempo audio, non l'orario civile. DNS guasto, certificato
+scaduto o servizio esterno indisponibile non devono togliere il suono.
+
+Il collegamento con un tutor remoto è un modulo distinto. Webcam
+con otturatore fisico e indicazione luminosa, microfono e chiamata
+si attivano solo nell'attività esplicitamente scelta; non servono
+per rilevare la presenza. Il progetto non promette esecuzione
+sincrona a distanza: una normale chiamata può sostenere ascolto,
+dimostrazione e alternanza, mentre suonare insieme sullo stesso
+tempo richiede un altro problema sperimentale, con misura di
+latenza e jitter della rete. La caduta della chiamata termina il
+collegamento e lascia disponibile lo strumento locale.
+
+\section{AI opzionale, circoscritta e interrompibile}
+
+Un assistente può proporre una variazione o spiegare un esercizio,
+ma non produce il suono associato al tasto e non decide se una
+persona abbia imparato. Il primo livello di aiuto resta un insieme
+editoriale di istruzioni e attività verificabili. Il modulo AI,
+se introdotto, legge soltanto il contesto necessario e restituisce
+testo o una proposta musicale in un formato validato. Non esegue
+codice, non installa pacchetti e non controlla direttamente il mixer.
+
+L'output viene distinto dai materiali curati. Per una proposta
+MIDI si verificano durata, intervalli, densità degli eventi e
+limiti di volume prima di abilitarne l'ascolto; il partecipante
+sceglie se avviarlo. La trascrizione vocale e l'invio di registrazioni
+non sono presupposti. L'elaborazione remota richiede una scelta
+esplicita e condizioni di trattamento definite; un modello locale
+richiede invece una verifica del suo impatto su memoria, temperatura
+e continuità audio.
+
+Si propone un'attesa massima iniziale di 8 secondi prima di offrire
+l'aiuto locale, conservando sempre il comando per annullare.
+Richieste e risposte sono associate alla sessione corrente: una
+risposta tardiva non appare al visitatore successivo. Materiali
+recuperati e testo dell'utente vengono trattati come dati non
+affidabili, incapaci di cambiare le autorizzazioni. Qualità
+pedagogica, errori musicali e dipendenza dall'aiuto richiedono
+valutazioni separate dall'affidabilità informatica.
+
+\section{Dati minimi e manutenzione riproducibile}
+
+La configurazione proposta non conserva registrazioni audio o
+video né eventi MIDI personali per impostazione iniziale. Le
+bozze musicali vivono in memoria per la sessione; un'esportazione
+viene avviata dalla persona e non comporta pubblicazione automatica.
+Un eventuale link di ritiro deve avere scadenza, accesso limitato
+e cancellazione verificabile; prima di introdurlo è preferibile
+collaudare un trasferimento locale assistito. Ricerca ed esercizio
+ordinario devono avere raccolte e consensi distinti.
+
+Per l'esercizio si propone di conservare localmente per sette
+giorni soli eventi tecnici: versione software, avvii, guasti,
+interruzioni audio e interventi. Tale durata è un parametro di
+progetto da approvare nella governance, non un obbligo normativo.
+Niente note, conversazioni, identificativi persistenti dei
+visitatori o orari dettagliati delle loro attività. Anche la
+combinazione di dati apparentemente innocui può diventare
+riconoscibile; la telemetria remota parte disattivata.
+
+Codice sorgente, configurazione, licenze dei contenuti, distinta
+dei componenti e istruzioni di ripristino devono accompagnare
+ogni rilascio. Una licenza aperta va scelta e applicata
+esplicitamente: repository pubblico e software riutilizzabile
+non sono sinonimi. Versioni bloccate, checksum dei pacchetti,
+inventario delle dipendenze e un'immagine recuperabile permettono
+a un altro manutentore di ricostruire la postazione. Gli
+aggiornamenti di sicurezza vengono provati su un ambiente separato;
+la pubblicazione di una nuova versione non autorizza il riavvio
+durante una sessione.
+
+\section{Guasti e prove di accettazione}
+
+Un guasto deve lasciare una condizione comprensibile e recuperabile.
+Se cade la UI, il nucleo musicale continua e la schermata si
+ricostruisce dal servizio locale. Se si perde l'interfaccia audio,
+si arresta la sessione con un avviso; la riconnessione non riparte
+al volume precedente senza controllo. Un disco pieno blocca
+aggiornamenti e log, non la sintesi già caricata. Un riavvio
+inatteso torna alla verifica iniziale, senza riprodurre contenuti
+della sessione interrotta.
+
+Temperatura, alimentazione, ventilazione, ancoraggi, accesso ai
+cavi e protezione dei connettori sono requisiti dell'oggetto, non
+impostazioni software. Un watchdog aiuta a rilevare processi
+fermi ma non sostituisce protezioni elettriche e controlli fisici.
+Il livello d'ascolto va calibrato per trasduttori e ambiente:
+una percentuale sullo schermo non corrisponde a una misura sonora.
+Limiti, pulsante di silenziamento e condizioni di riapertura
+vengono definiti con i responsabili competenti prima dell'uso pubblico.
+
+Le seguenti prove costituiscono una prima soglia di accettazione
+proposta, da integrare con i collaudi di accessibilità e sicurezza.
+Ogni verbale riporta hardware, versioni, condizioni, risultato e
+artefatti necessari alla ripetizione.
+
+\begin{table}[htbp]
+\centering\small
+\begin{tabularx}{\linewidth}{@{}lXl@{}}
+\toprule
+Requisito & Criterio proposto & Prova \\
+\midrule
+TR1 & Funzioni musicali essenziali indipendenti dalla rete. & E1 \\
+TR2 & Mediana $\leq15$~ms; p95 $\leq20$~ms; p95--mediana $\leq5$~ms. & E2 \\
+TR3 & Guasti separabili, nessuna nota bloccata, ripresa controllata. & E3 \\
+TR4 & Nessun contenuto della sessione precedente disponibile al successore. & E4 \\
+TR5 & Nessuna interruzione audio nella prova continuativa dichiarata. & E5 \\
+TR6 & Rilascio invalido rifiutato; versione approvata ricostruibile. & E6 \\
+\bottomrule
+\end{tabularx}
+\caption{Tracciabilità minima fra requisiti e collaudi. Sono soglie
+di progetto da validare, non esiti conseguiti.}
+\end{table}
+
+\begin{description}
+\item[E1 --- Autonomia.] Avviare senza Internet e completare le
+attività essenziali; togliere la rete durante l'esecuzione senza
+interrompere il percorso musicale.
+\item[E2 --- Risposta.] Misurare il budget gesto--suono sopra
+definito sotto carico; dichiarare ogni superamento e la configurazione
+in cui compare, senza sostituire la misura con una stima del driver.
+\item[E3 --- Recupero.] Scollegare tastiera e audio separatamente,
+forzare la chiusura della UI e simulare un disco pieno; verificare
+rilascio delle note, messaggi e ritorno controllato al servizio.
+\item[E4 --- Passaggio.] Concludere almeno venti sessioni con
+contenuti diversi e verificare assenza di residui nella UI,
+nei servizi applicativi e nei log previsti.
+\item[E5 --- Continuità.] Eseguire una prova tecnica di otto ore
+con eventi sintetici e interazioni grafiche, registrando tutte le
+interruzioni audio e le condizioni termiche. L'obiettivo iniziale
+è zero interruzioni; un solo turno non prova affidabilità annuale.
+\item[E6 --- Ripristino.] Installare un aggiornamento volutamente
+non valido, rifiutarlo e ricostruire la versione approvata da
+materiali documentati, con intervento di un secondo manutentore.
+\end{description}
+

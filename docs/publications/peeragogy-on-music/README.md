@@ -1,30 +1,35 @@
-# Il Portale — Peeragogy on Music
+# Il Portale — monografia tecnica v0.5
 
-## Versione attuale
+18 ottobre 2026. **Il Portale: una infrastruttura civica per imparare musica**. Autore e direzione: Fabrizio Terzi. Ricerca/redazione assistita ChatGPT con sei agenti specialistici; integrazione e revisione interna del coordinatore.
 
-Bozza italiana v0.4, 18 ottobre 2026. Riscrittura narrativa e progettuale: esperienza musicale, identità dell'oggetto, apprendimento condiviso e rapporto con Parco Caprotti. Fonti e limiti sono conservati, con le note metodologiche concentrate nella sezione finale. Scene d'uso e prima persona esprimono proposte, non risultati osservati.
+## Leggere e revisionare
 
-Illustrazione originale e nuovi riferimenti archivistici puntuali; proposta aggiornata al programma 2026 del Giardino dell’anima. Sorgenti: main.tex, sections/*.tex e references.bib. PDF aggiornato: main.pdf.
+- [PDF completo](main.pdf)
+- [Sorgente principale](main.tex), [capitoli](sections/), [bibliografia canonica](references.bib)
+- [Protocollo di valutazione: 100 punti](review/REVIEW_PROTOCOL.md)
+- [Prompt per concorrente e revisore](review/COMPETITOR_PROMPT.md)
+- [Revisione interna e correzioni](review/INTERNAL_REVIEW_V05.md)
+- [Registri fonti e claim](research/)
 
-## Lavoro sul ramo principale
+Otto capitoli: tesi e origine; originalità e precedenti; forma/accessibilità/acustica; architettura MIDI/audio/software/AI; pedagogia e valutazione; città e sito; governance/costi/percorso; sintesi. Appendice con 12 requisiti trasversali, collegata ai 6 requisiti tecnici e 6 collaudi. Due schemi vettoriali e illustrazione originale inalterata.
 
-Per istruzione di Fabrizio si lavora direttamente sul default branch **master** (in questa repository main non esiste). Pubblicazione e dossier di supporto sono stati portati qui dal branch di ricerca. Il confronto storico resta nella PR #2: https://github.com/Peeragogia/ilportale/pull/2
+Questa edizione sostituisce il taglio introduttivo della v0.4 con una proposta di sistema completa a livello di ricerca e pre-fattibilità. Non è un progetto esecutivo: non sono disponibili rilievo, collaudi hardware, autorizzazioni, accordi, preventivi definitivi o dati di partecipanti. Specifiche e soglie sono proposte, costi scenari interni parziali. L'originalità è argomentata tramite confronti mirati, senza primati inventati.
 
-ChatGPT cura la scrittura; Pi verifica fonti, contenuti e compilazione. Prima di modificare gli stessi file ci si coordina nella discussione. Sincronizzare sempre l'ultima head e non forzare gli aggiornamenti. Non richiedere branch separati per routine editoriale già autorizzata.
+## Compilazione e controllo
 
-## Compilazione
-
-```bash
+```sh
 latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
+python3 tools/check_publication.py
 ```
 
-TeX Live 2023, Babel recente, Latin Modern, xurl. In alternativa pdflatex, bibtex, pdflatex due volte. La review indipendente di Pi della v0.3 è in `research/EDITORIAL_REVIEW_V03.md`: sette pagine, compilazione LaTeX riuscita; due warning BibTeX per anni mancanti. La v0.4 esplicita `s.d.` per le fonti senza data accertata.
+Richiede TeX Live, Latin Modern, Babel, natbib, TikZ, enumitem, titlesec, fancyhdr, tabularx, longtable e xurl. La verifica locale e gli hash sono in `review/BUILD_REPORT.md` e `review/DELIVERY_MANIFEST.sha256`. Nessuna prova sul dispositivo fisico è simulata dalla compilazione.
 
-## Principi editoriali
+## Lavoro comune
 
-Prima il desiderio, l'oggetto e l'esperienza; la verifica deve renderli discutibili e realizzabili. Non cancellare voce e intenzione dell'autore per accumulare cautele. Non inventare biografia, risultati, partner, primati o approvazioni. Parco Caprotti compare nella fonte; Padiglione è candidato contemporaneo. La fonte originale resta invariata. I registri PUB-Snn sono distinti dagli ID del dossier tecnico.
+Si lavora direttamente su **master**, ramo principale del repository, per istruzione di Fabrizio. Sincronizzare la head prima di modificare; non forzare gli aggiornamenti. Discussione con Pi: https://github.com/Peeragogia/ilportale/pull/2 . La review di Pi della v0.3 resta conservata; la v0.5 richiede una revisione nuova.
 
-La v0.2 è conservata nella storia git; Pi ha completato la review della v0.3. La v0.4 attende la sua verifica indipendente.
+Le vecchie sezioni non più incluse sono conservate nella storia Git; la v0.4 completa è al commit `de9f82fb30971d95dfacb454abad97a18043971a`. Le note di ricerca pregresse conservano il loro statuto datato e non costituiscono automaticamente lo stato editoriale corrente.
 
+## Confronto LLM
 
-Verifica locale v0.4: nove pagine; zero warning LaTeX e BibTeX, nessuna citazione irrisolta, nessun overfull/underfull box. Controllo visivo delle nove pagine renderizzate, illustrazione inclusa.
+Protocollo, scheda di score e prompt sono pronti. Nessun concorrente è stato eseguito e nessun vincitore dichiarato. Per confronto cieco controllato congelare corpus e risorse prima di avviare entrambi; per confrontare questa edizione con un nuovo elaborato in condizioni diverse usare l'etichetta «confronto esplorativo». Pi può valutare ora questa monografia secondo la stessa rubrica, indicando evidenze e limiti.
