@@ -1,11 +1,19 @@
-# Consegna a Pi — v0.5
+# Consegna a Pi — v0.6
 
-Il ramo principale è master. Fissare il commit di questa consegna prima della revisione, verificando il manifest. PDF SHA-256: `6d9b27a876d50e5026dcc052137b9907512dee47f0df167125037db113c631c4`.
+19 ottobre 2026. Fissare il commit della consegna prima della revisione. PDF SHA-256: `58be31f2611dc40b9afe7810abf03a07de623950d48c8c2c022ba03e9fdaf9b0`. Fonti e file verificabili mediante DELIVERY_MANIFEST.sha256.
 
-1. Leggere `main.pdf` integralmente e `review/INTERNAL_REVIEW_V05.md` per le correzioni già effettuate.
-2. Compilare la scheda in `REVIEW_PROTOCOL.md`: 100 punti, ogni livello motivato con pagina/evidenza; distinguere gate di pubblicabilità da score. Nessuna aspettativa di approvazione o voto minimo.
-3. Verificare in particolare: tesi di originalità rispetto ad alternative semplici; statuto dei numeri; catena gesto-suono/offline; stati/mensola; rapporto fra pilota pedagogico e valutazione hardware; budget parziali; atti e usi del Padiglione.
-4. Ripetere compilazione e `python3 tools/check_publication.py`; non trasformare il successo editoriale in prova del prototipo.
-5. Pubblicare review con SHA, fonti controllate, limiti, rilievi ordinati per conseguenza e correzioni minime nella discussione PR2. Concordare ownership prima di riscrivere gli stessi capitoli.
+## Mandato aggiornato
 
-Il concorrente LLM non è stato eseguito. Il prompt B in `COMPETITOR_PROMPT.md` può ricevere questo stesso commit per una revisione indipendente e uno score assoluto. Per una nuova redazione usare prompt A, un corpus congelato e risorse dichiarate. La comparazione con questa v0.5, già redatta con una squadra, sarà esplorativa se non si replicano le condizioni. Non attribuire risultati o vincitori prima di ricevere e valutare il secondo output.
+Leggere per prima la precisazione `research/AUTHOR_CLARIFICATION_2026-10-18.md`: due pianisti remoti quasi come in uno specchio, ambizione di contemporaneità anche a 10.000 km; studio su piattaforma propria o risorse esterne. La v0.5 non esprimeva questo centro. La v0.6 riscrive tutti i capitoli e la matrice, con costi e governance riferiti a due nodi.
+
+## Revisione richiesta
+
+1. Leggere main.pdf integralmente, distinguendo presenza, coordinazione e apprendimento. Valutare se forma poetica e architettura descrivono lo stesso incontro.
+2. Usare review/REVIEW_PROTOCOL.md: score 100 punti con pagine ed evidenze per ogni livello, gate distinto. Nessun voto minimo atteso.
+3. Controllare fonti networked music, budget locali/remoti, modello della propagazione, orientamento mani, camera/anteprima/consenso e scarto AV a origine comune.
+4. Verificare piattaforma e studio autonomo: non devono essere una modalità residuale né software già dichiarato implementato.
+5. Verificare budget a due nodi, doppio presidio, 12 settimane / 24 incontri / 48 ore condivise; esclusioni e assenza di preventivi. Il disegno educativo è preliminare: numerosità, richiamo, rubrica e soglie da preregistrare prima di reclutare.
+6. Ripetere build e tools/check_publication.py. Controllare REFOCUS_AUDIT.md per le correzioni già effettuate senza assumerle automaticamente corrette.
+7. Pubblicare review nella discussione PR2 con SHA, fonti consultate, limiti e rilievi verificati. Coordinare ownership prima di editare gli stessi capitoli.
+
+Il concorrente esterno non è stato eseguito. Prompt e rubrica aggiornati sono in COMPETITOR_PROMPT.md e REVIEW_PROTOCOL.md. Per revisione concorrente fornire lo stesso commit; per nuova redazione congelare corpus e risorse. La vecchia v0.5 è un precedente storico, non il brief da riproporre al concorrente.

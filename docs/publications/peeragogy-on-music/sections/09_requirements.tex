@@ -1,38 +1,37 @@
-\chapter{Requisiti trasversali e percorso di verifica}\label{app:requirements}
+\chapter{Dalla promessa dell'incontro alla sua verifica}\label{app:requirements}
 
-La matrice rende rintracciabile il passaggio dalla promessa alla prova. Gli identificatori R01--R12 sono requisiti trasversali di questa edizione, non certificazioni. Le soglie quantitative dei capitoli specialistici restano candidate: prima della sperimentazione il gruppo di progetto deve congelare configurazione, procedure, denominatori e responsabilità in una scheda di collaudo versionata.
+La matrice identifica condizioni da dimostrare sulla coppia di Portali, sullo studio autonomo e sul servizio nei due luoghi. R01--R14 sono requisiti trasversali; N1--N8 sono le prove tecniche proposte nel capitolo 4. Nessuna di queste prove viene dichiarata svolta. Prima del pilota si congeleranno configurazione, attività, strumenti di misura e criteri decisionali.
 
 \small
-\begin{longtable}{P{0.07\linewidth}P{0.25\linewidth}P{0.29\linewidth}P{0.27\linewidth}}
-\toprule
-ID & Requisito proposto & Prova e traccia richiesta & Condizione di decisione \\\midrule
+\begin{longtable}{P{0.06\linewidth}P{0.25\linewidth}P{0.30\linewidth}P{0.27\linewidth}}
+\toprule ID & Promessa e requisito & Evidenza richiesta & Decisione conseguente \\\midrule
 \endfirsthead
-\toprule ID & Requisito proposto & Prova e traccia richiesta & Condizione di decisione \\\midrule
+\toprule ID & Promessa e requisito & Evidenza richiesta & Decisione conseguente \\\midrule
 \endhead
-R01 & Il primo suono non richiede account, rete o AI. & Avvio da macchina spenta con rete scollegata; percorso osservato e log locale tecnico. & Bloccare apertura se il nucleo musicale dipende da autenticazione o rete. \\\addlinespace
-R02 & Il gesto conserva una risposta musicale controllabile. & Misura end-to-end con catena e carico dichiarati; distribuzione di latenza e prove di note bloccate. & Confrontare soglie del capitolo tecnico; correggere prima di esporre al pubblico. \\\addlinespace
-R03 & Una persona può uscire senza lasciare contenuti alla successiva. & Uscita volontaria, timeout, crash e riavvio; controllo di memoria e archivi. & Nessun contenuto di sessione deve ricomparire; conservazione solo per percorso esplicito. \\\addlinespace
-R04 & L'ascolto condiviso è una scelta reversibile. & Verifica di avvio silenzioso, passaggio cuffia/diffusione e controllo livello; osservazione sul sito. & Sospendere diffusione se compromette altri usi o non rispetta condizioni concordate. \\\addlinespace
-R05 & Due partecipanti possono contribuire e scambiarsi ruolo. & Attività a coppie; codifica di contributi, turni, aiuti e posizione fisica. & Rivedere spazio o attività se il secondo rimane sistematicamente spettatore. \\\addlinespace
-R06 & Accessibilità verificata sull'intera catena d'uso. & Arrivo, avvicinamento, postura, comando, feedback e uscita con utenti dalle esigenze diverse. & Un'interfaccia accessibile non compensa un percorso o una struttura inaccessibili. \\\addlinespace
-R07 & Il materiale distingue autore, licenza e provenienza. & Audit del pacchetto offline e dei contributi pubblicati; scheda per ciascuna risorsa. & Non pubblicare contenuti senza diritto e condizioni di riuso verificati. \\\addlinespace
-R08 & L'effetto educativo è distinto dall'attrazione. & Compito musicale iniziale, successivo e differito senza supporto; abbandoni e aiuti registrati. & Non affermare apprendimento sulla sola permanenza o soddisfazione. \\\addlinespace
-R09 & La collocazione è consentita e compatibile. & Sopralluogo, disponibilità documentata, verifica degli usi e dei passaggi autorizzativi. & Nessuna installazione pubblica sulla sola base del render o della proposta editoriale. \\\addlinespace
-R10 & Ogni ora di apertura ha una responsabilità operativa. & Calendario, referente, procedura guasti, disponibilità dei ricambi e risorse impegnate. & Ridurre apertura se manca copertura effettiva; dichiarare servizio assistito. \\\addlinespace
-R11 & Il costo include cura e continuità. & Distinta, preventivi, ore, sostituzioni e scenari di utilizzo; confronto alternativa semplice. & Ridimensionare se il costo sostenibile dipende da lavoro non riconosciuto. \\\addlinespace
-R12 & Il valore aggiunto è confrontabile. & Protocollo uguale per alternativa semplice e Portale, con dose di facilitazione dichiarata. & Separare beneficio del programma, del facilitatore e della specifica tecnologia. \\
+R01 & Due pianisti possono vedersi e ascoltarsi reciprocamente. & Due nodi reali; audio bidirezionale, video, scelta dei livelli; N2--N4. & Un solo terminale non verifica la funzione centrale. \\\addlinespace
+R02 & L'immagine suggerisce presenza senza confondere il gesto. & Prove di scala, sguardo, volto e mani; orientamento dichiarato; N4. & Correggere camera e layout se destra/sinistra o ruolo sono ambigui. \\\addlinespace
+R03 & La musica simultanea è qualificata per tratta e attività. & Latenze nei due sensi, jitter, perdita, repertorio e ruoli; N2,N3,N5. & Un esito positivo non autorizza promesse per ogni rete o distanza. \\\addlinespace
+R04 & Il proprio strumento resta controllabile. & Gesto--suono locale in entrambi i nodi, perdita di rete, note sospese; N1,N7. & Separare autonomia locale da riuscita dell'incontro remoto. \\\addlinespace
+R05 & Audio e gesto visivo conservano un rapporto leggibile. & Misura camera--display e scarto audiovisivo nei due sensi; N4. & Non allineare il video ritardando l'audio senza valutare il costo musicale. \\\addlinespace
+R06 & Ogni persona controlla la propria esposizione. & Invito rifiutato, chiusura, camera oscurata, rete caduta e riconnessione; N6. & Nessuna riapertura automatica dopo una revoca o caduta. \\\addlinespace
+R07 & La modalità è riconoscibile e concordata. & Distinguere ensemble, alternanza, registrazione e studio; verificare cambi e notifiche. & Un'alternanza riuscita non viene conteggiata come duetto simultaneo riuscito. \\\addlinespace
+R08 & Lo studio ha valore anche senza partner disponibile. & Catalogo locale, esempio, prova autonoma, risorsa esterna e caso offline. & Niente account obbligatorio per il primo suono; fallback curato per link indisponibili. \\\addlinespace
+R09 & La continuità non dipende dalla raccolta indiscriminata. & Controllo reset, diario facoltativo, log tecnici e autorizzazioni distinte; N6,N8. & Non trasferire alla sessione seguente contenuti o privilegi personali. \\\addlinespace
+R10 & L'accesso riguarda l'intera esperienza. & Percorso, postura, controlli, ascolto, visione e interruzione con esigenze diverse. & Una pagina conforme non rende accessibile l'intero manufatto. \\\addlinespace
+R11 & L'apprendimento è distinto da presenza e soddisfazione. & Prova iniziale, finale e differita senza partner o aiuti; rubrica e giudici. & Non dedurre competenza dal piacere dell'incontro o dalla durata. \\\addlinespace
+R12 & Entrambi i luoghi possono mantenere la promessa. & Disponibilità, referente, fuso, calendario, presidio, manutenzione e incidenti. & Se manca una condizione in un nodo, annunciare rinvio o cambio modalità. \\\addlinespace
+R13 & Le risorse hanno provenienza e condizioni di riuso. & Autori, licenze, versione, destinazione dei link e pubblicazione separata dall'uso. & Rimozione dal catalogo e revoca di diritti già concessi non sono equivalenti. \\\addlinespace
+R14 & Il valore aggiunto giustifica forma e complessità. & Confronto con postazione audiovisiva ordinaria a compiti e aiuti equivalenti. & Valutare qualità relazionale, autonomia, accesso e costo complessivo. \\
 \bottomrule
 \end{longtable}
 \normalsize
 
-\section{Dati mancanti che cambiano una decisione}
-I dati da ottenere per primi sono quelli capaci di cambiare la configurazione: geometria e accessi reali del sito; disponibilità e usi concordabili; condizioni elettriche e ambientali; possibilità di ascolto; bisogni dei partecipanti; persone e risorse per il presidio. La raccolta di questi elementi precede un disegno costruttivo definitivo. La provenienza deve accompagnare ciascun parametro: misura diretta, documento, stima, convenzione o ipotesi.
+\section{La prima coppia e i dati che mancano}
+Occorrono un secondo luogo e interlocutori disponibili, oltre al rilievo di entrambi i siti. Geometria, luce, acustica, accesso, impianti, rete e presidio devono essere documentati prima di una configurazione definitiva. Il primo confronto controllato può avvenire con due postazioni vicine; non dimostra la lunga distanza. Il percorso geografico successivo richiede nuove misure e un calendario condiviso. Il budget comprende due nodi e distingue spese comuni, locali e voci ancora escluse.
 
-La storiografia mantiene una propria agenda: documenti edilizi del Padiglione, attribuzione, trasformazioni, atti relativi al passaggio del giardino e quadro specifico della tutela. La data 1890 riportata nel resoconto locale \cite{primabergamo2024}
-contrasta con il 1891 registrato nella fonte PUB-S07 del dossier:
-la datazione resta aperta e non viene risolta per maggioranza delle fonti. Le fonti archivistiche localizzate nell'inventario non devono essere trattate come atti integralmente consultati.
+La ricerca storica mantiene aperti attribuzione e trasformazioni del Padiglione, atti originali inventariati e condizioni specifiche di tutela. Il 1890 riportato dal resoconto locale \cite{primabergamo2024} e il 1891 della fonte PUB-S07 restano in conflitto. La volontà di donazione del 1947 è documentata nell'inventario, non assunta come trasferimento compiuto. Questi limiti non vengono colmati da una rappresentazione grafica.
 
-\section{Materiali per una revisione riproducibile}
-Il repository contiene sorgente LaTeX, bibliografia, illustrazione originale con provenienza, note di ricerca per ciascun ambito e protocollo comparativo. La valutazione va riferita a un commit preciso: il ramo principale può cambiare. Il revisore deve indicare pagine, requisiti e fonti a sostegno di ogni punteggio; i criteri che non può valutare vanno marcati come tali.
+\section{Una revisione riferita al progetto corretto}
+Il corpus comprende la precisazione dell'autore del 18 ottobre 2026: presenza quasi speculare, due pianisti remoti, contemporaneità e studio su piattaforme. La v0.6 va valutata rispetto a questo brief. La qualità poetica richiede che forma e relazione risultino comprensibili; la qualità tecnica richiede che le condizioni di quella relazione siano verificabili. Nessuna delle due può sostituire l'altra.
 
-Il confronto con un altro LLM è predisposto come procedura, non presentato come risultato. Richiede un brief comune, un corpus congelato, condizioni di ricerca dichiarate, output indipendenti e valutatori che non conoscano, ove possibile, l'autore della redazione. Una buona compilazione dimostra integrità editoriale, non superiorità scientifica o fattibilità fisica. La griglia completa e il prompt per il concorrente sono nella cartella \texttt{review/}.
+La rubrica e i prompt in \texttt{review/} distinguono revisione dello stesso documento e redazione indipendente. Un confronto controllato richiede corpus e risorse comuni; il confronto con questa redazione già prodotta, in condizioni diverse, rimane esplorativo. I punteggi devono indicare pagine ed evidenze. La compilazione e gli hash verificano la consegna editoriale, non la riuscita musicale della futura installazione.

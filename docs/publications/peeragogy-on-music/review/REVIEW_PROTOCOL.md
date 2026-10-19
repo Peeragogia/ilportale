@@ -1,28 +1,36 @@
 # Il Portale — protocollo di revisione e confronto indipendente
 
-Versione 1.0, 18 ottobre 2026. Documento di valutazione, non risultato di una valutazione. Nessun punteggio è stato attribuito alla pubblicazione o a un concorrente.
+Versione 1.1, 18 ottobre 2026. Documento di valutazione, non risultato di una valutazione. Nessun punteggio è stato attribuito alla pubblicazione o a un concorrente.
 
 ## Oggetto e unità del confronto
 
 Valutare se una pubblicazione rende Il Portale comprensibile, distintivo, tecnicamente discutibile e concretamente sperimentabile nella città, conservandone la forza umana. La lunghezza, il numero di riferimenti, il prestigio del modello e la prosa assertiva non costituiscono evidenza di qualità.
+
+### Brief vincolante aggiornato dall’autore
+
+Il centro della revisione v0.6 è l’incontro musicale aumentato: OLED e camera devono dare una presenza quasi speculare del pianista remoto, anche a una distanza immaginata di 10.000 km; l’ambizione include suonare contemporaneamente e una modalità studio appoggiata a una piattaforma propria o esterna. È una precisazione contemporanea dell’autore da fornire identica a entrambi i concorrenti. Non prova che tutte le specificazioni fossero già descritte nel 2013–2016 e non costituisce una prestazione ottenuta.
+
+Il revisore deve distinguere quattro condizioni: presenza audiovisiva reciproca; esecuzione contemporanea nel tempo civile; coordinazione ritmica stretta con ascolto reciproco; scambio differito o alternato. La prima e la seconda non dimostrano la terza. Il testo deve trattare senza eluderla l’ambizione della distanza e progettare modalità musicali compatibili con i ritardi misurati. Non va premiato chi elimina la relazione remota per rendere più semplice il progetto, né chi promette di annullare la propagazione fisica con software o AI.
+
+La metafora dello specchio richiede un trattamento di inquadratura, scala, orientamento dei tasti, sguardo e sincronizzazione audiovisiva: uno specchiamento letterale non è automaticamente adatto all’apprendimento. La modalità studio deve rendere esplicito il rapporto fra piattaforma, strumenti, contenuti, progressione e ritorno alla pratica, senza ridurla a una generica videochiamata o a un link. Il funzionamento locale costituisce una base di continuità, non una sostituzione del cuore relazionale.
 
 Tenere separati due esercizi:
 
 1. **Revisione dello stesso testo.** Due revisori ricevono l'identica pubblicazione e devono trovare difetti, verificarli, graduarli e proporre correzioni. Il risultato misura la qualità della revisione, non la superiorità delle pubblicazioni.
 2. **Redazione indipendente.** Due sistemi ricevono l'identico brief, corpus congelato, vincoli e budget. Producono due pubblicazioni nuove. Soltanto questi elaborati si confrontano con la rubrica su 100 punti sotto riportata.
 
-La v0.5 già prodotta può essere valutata in termini assoluti. Confrontarla con un testo scritto in condizioni differenti è un confronto esplorativo fra elaborati, non un esperimento controllato sulla capacità dei modelli. Non ricostruire retroattivamente un budget fittizio per rendere simmetrico il lavoro già svolto.
+La v0.6 prodotta può essere valutata in termini assoluti. Confrontarla con un testo scritto in condizioni differenti è un confronto esplorativo fra elaborati, non un esperimento controllato sulla capacità dei modelli. Non ricostruire retroattivamente un budget fittizio per rendere simmetrico il lavoro già svolto.
 
 ## Congelamento e condizioni comparabili
 
-Prima dell'esecuzione, un coordinatore umano compila il registro seguente e congela un commit del corpus. Il corpus della redazione include la fonte originale, il dossier storico, i registri delle fonti e le eventuali verifiche già concluse. Esclude la nuova prosa v0.5 e i suoi schemi originali, per evitare che uno dei concorrenti riscriva il risultato dell'altro. Se la v0.4 viene fornita, deve esserlo a entrambi e dichiarata materiale di partenza.
+Prima dell'esecuzione, un coordinatore umano compila il registro seguente e congela un commit del corpus. Il corpus della redazione include la fonte originale, il dossier storico, i registri delle fonti e le eventuali verifiche già concluse. Esclude la nuova prosa v0.5/v0.6 e i suoi schemi originali, per evitare che uno dei concorrenti riscriva il risultato dell'altro. Se la v0.4 viene fornita, deve esserlo a entrambi e dichiarata materiale di partenza.
 
 | Campo | Valore da compilare prima dell'esecuzione |
 |---|---|
 | Tipo | Revisione / redazione indipendente / confronto esplorativo |
 | Repository e commit corpus | — |
 | Manifest dei file e SHA-256 | — |
-| Brief identico e suo SHA-256 | — |
+| Brief identico e suo SHA-256 | Include precisazione autore v0.6 sopra riportata |
 | Inclusione v0.4 | Sì / no, motivazione |
 | Fonti escluse o irraggiungibili | — |
 | Data limite delle fonti | — |
@@ -52,11 +60,11 @@ Assegnare a ogni criterio un livello intero 0–4. Punti = peso × livello / 4. 
 
 | Criterio | Peso | Evidenza richiesta per il livello 4 |
 |---|---:|---|
-| Concezione e bellezza progettuale | 12 | Tesi riconoscibile; relazione necessaria fra forma, corpo, musica, apprendimento e spazio civico; scelte e rinunce argomentate; scene d'uso che chiariscono il sistema, senza sostituire la dimostrazione. |
+| Concezione e bellezza progettuale | 12 | Tesi riconoscibile; presenza quasi speculare e incontro musicale remoto come nucleo poetico; relazione necessaria fra forma, corpo, musica, apprendimento e spazio civico; scelte e rinunce argomentate; scene d'uso che chiariscono il sistema, senza sostituire la dimostrazione. |
 | Originalità e confronto | 10 | Comparazione corretta con precedenti pertinenti; contributo distintivo circoscritto, differenze verificabili e limiti; nessun primato senza prova; alternative che potrebbero raggiungere gli stessi obiettivi considerate seriamente. |
 | Ricerca e onestà delle fonti | 16 | Affermazioni rintracciabili a fonti appropriate e localizzate; ricostruzione storica distinta dalla proposta; conflitti conservati; fonti primarie impiegate quando disponibili; citazioni effettivamente a sostegno del claim. |
-| Architettura e verifica tecnica | 18 | Flussi, componenti, interfacce e stati coerenti; requisiti misurabili con metodo di accettazione; budget di latenza ragionato; guasti e recupero; manutenzione; separazione esplicita fra realizzato, proposto, stimato e da misurare. |
-| Pedagogia e disegno di ricerca | 14 | Meccanismi di apprendimento tra pari osservabili; attività e facilitazione progettate; esiti musicali distinti da gradimento/attrazione; prova senza assistenza e, quando pertinente, differita; limiti causali e fattibilità della raccolta. |
+| Architettura e verifica tecnica | 18 | Flussi locali e remoti, componenti, interfacce e stati coerenti; distinzione simultaneità/coordinazione, budget one-way/round-trip e sincronizzazione audio-video; requisiti misurabili con metodo di accettazione; budget di latenza ragionato; guasti e recupero; manutenzione; separazione esplicita fra realizzato, proposto, stimato e da misurare. |
+| Pedagogia e disegno di ricerca | 14 | Meccanismi di apprendimento tra pari locali e remoti osservabili; piattaforma studio propria/esterna concretamente descritta; attività e facilitazione progettate; esiti musicali distinti da gradimento/attrazione; prova senza assistenza e, quando pertinente, differita; limiti causali e fattibilità della raccolta. |
 | Città, luogo e accessibilità | 12 | Rapporto specifico con Parco Caprotti e usi documentati; alternative di collocazione; convivenza con non utenti; accessibilità fisica, sensoriale, cognitiva e sociale; interlocutori proposti distinti da partnership confermate. |
 | Fattibilità, cura e responsabilità | 10 | Fasi e criteri di arresto; responsabilità e presidio; costo totale con ipotesi leggibili; sicurezza, dati e contenuti proporzionati; decisioni che richiedono rilievo o professionisti identificate senza simulare autorizzazioni. |
 | Qualità editoriale e riproducibilità | 8 | Italiano preciso e vivo; progressione narrativa; diagrammi e tabelle utili, coerenti col testo; bibliografia leggibile; LaTeX/PDF verificabili; figure con provenienza; niente ridondanza usata per simulare profondità. |
@@ -78,6 +86,7 @@ I seguenti errori sospendono il giudizio di pubblicabilità. Il punteggio diagno
 
 - fonte, citazione, misura, esperimento o risultato inventato;
 - attribuzione falsa di partner, autorizzazione, proprietà, deposito legale o validazione;
+- latenza remota spacciata per annullata o indistinta dalla latenza locale; promessa di coordinazione musicale stretta universale a 10.000 km senza un budget fisico e una prova pertinenti;
 - conflitto fra requisito e architettura che rende impossibile la funzione centrale e viene occultato;
 - indicazione operativa materialmente pericolosa presentata come verificata, oppure conformità normativa dichiarata senza base;
 - riuso di immagini o contenuti con provenienza falsa, oppure assenza di elementi indispensabili a ricostruirla;

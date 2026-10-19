@@ -46,3 +46,22 @@ Questo file serve a impedire che un'idea plausibile diventi, per ripetizione, un
 | V05-C12 | ProgrammaCerchioGesso conferma spazio disponibile | NON DIMOSTRATO | PUB-S19 documenta programma; accordi da ottenere |
 | V05-C13 | WCAG certifica accessibilità dell'intera installazione | FALSO | des_wcag22 riguarda interfaccia digitale; rilievo/prove fisiche necessari |
 | V05-C14 | Un LLM concorrente è stato superato | NON VALUTATO | Nessun output concorrente o score disponibile; protocollo predisposto |
+
+## Versione corrente v0.6 — la coppia di Portali
+
+Il registro V05 sopra è storico: requisiti TR/E, campione36/18 e budget a nodo singolo non sono le specifiche correnti. La v0.6 usa prove N1–N8, requisiti R01–R14, disegno pilota preliminare a due nodi e budget di coppia. Il funzionamento locale resta un requisito, ma non esaurisce la funzione centrale.
+
+| ID | Claim | Stato | Evidenza / prova |
+|---|---|---|---|
+| V06-C01 | L'autore intende una presenza quasi speculare fra pianisti lontani e uno spazio di studio | DOCUMENTATO COME INTENZIONE | teleconc_terzi2026, trascrizione18ott |
+| V06-C02 | Il concept2016 contiene webcam e ritorno video a distanza | DOCUMENTATO | PUB-S01 p2; non dimostra prestazioni |
+| V06-C03 | Il Portale funziona in duo sincronizzato a10000km | NON DIMOSTRATO | Ambizione, non test; N2–N5 richieste |
+| V06-C04 | 10000km di fibra conng1,4682 implicano circa49ms per senso di sola propagazione | CALCOLO CONDIZIONALE | net_fiber, lunghezza e mezzo dichiarati; percorso reale ignoto |
+| V06-C05 | Una latenza locale di20ms garantisce coordinazione remota | FALSO | Catene e misure distinte |
+| V06-C06 | OLED consente automaticamente camera dietro il pannello e sguardo coincidente | NON DIMOSTRATO | Scelta ottica e geometria da provare |
+| V06-C07 | L'inversione automatica dell'immagine è necessaria al quasi specchio | NON ASSUNTO | Postura frontale e reciprocità; orientamento mani preservato |
+| V06-C08 | Studio autonomo richiede sempre partner o account | FALSO PER IL REQUISITO | Catalogo locale e primo gesto senza account; progressi facoltativi |
+| V06-C09 | I costi di coppia sono44784euro pilota e86304euro anno | STIME INTERNE PARZIALI | Ipotesi aritmetiche cap7, esclusioni esplicite, non preventivi |
+| V06-C10 | Presenza percepita prova apprendimento duraturo | NON DIMOSTRATO | Misure separate, prova individuale e richiamo |
+| V06-C11 | Il prototipo/piattaforma del Portale esiste già | NON ATTESTATO | Proposta di sviluppo, no hardware o software musicale implementato in questa redazione |
+| V06-C12 | Si può riprendere automaticamente la camera dopo una caduta rete | CONTRARIO AL REQUISITO | Nuova conferma, anteprima locale distinta, provaN6 |

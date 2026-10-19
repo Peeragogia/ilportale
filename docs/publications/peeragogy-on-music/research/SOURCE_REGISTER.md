@@ -81,3 +81,21 @@ Corrispondenze deduplicate: `learn_weatherly` → `weatherly2025` (PUB-S18); `le
 | learn_ccby | learning_sources.md | Licenza proposta e condizioni, non licenza automatica di tutto il repository |
 
 PUB-S18: la selezione della review esclude lavori focalizzati su musica digitale o apprendimento virtuale. La monografia non la usa come prova dell'efficacia digitale o AI.
+
+## Estensione v0.6 — 19 ottobre 2026: presenza remota e studio
+
+Questa estensione aggiorna il perimetro precedente: la coppia di Portali e l'incontro quasi speculare sono centrali. Le note e i frammenti v0.5 conservano valore storico ma non descrivono automaticamente l'architettura v0.6. Bibliografia canonica: references.bib.
+
+| Chiavi | Fonte / nota di verifica | Uso e limite |
+|---|---|---|
+| teleconc_terzi2026 | AUTHOR_CLARIFICATION_2026-10-18.md | Precisazione autoriale trascritta; intenzione contemporanea, non prestazione retrodatata |
+| teleconc_lola, teleconc_drioli2013 | telepresence_concept_sources.md | Antecedenti audiovisivi: condizioni specifiche, non garanzia per la rete del Portale |
+| teleconc_jacktrip2010, teleconc_chafe | telepresence_concept_sources.md | Performance in rete e dipendenza da ritardi/ruoli; nessuna soglia universale |
+| net_jacktrip, net_jacktrip_latency | network_engineering_sources.md | Documentazione primaria della catena audio e della latenza |
+| net_lola_manual | network_engineering_sources.md | Manuale LoLa2.0.0,2019; riferimento tecnico storico, non valutazione della release attuale |
+| net_fiber | network_engineering_sources.md | CorningPI1424luglio2025 p2: indice di gruppo1,4682 a1550nm, modello esplicito di propagazione |
+| remote_duffy | remote_learning_sources.md | Ritardo e alternanza nella lezione musicale, studio circoscritto |
+| remote_washburn | remote_learning_sources.md | Coordinazione e ruoli nei duetti, non efficacia del Portale |
+| remote_presence | remote_learning_sources.md | Distinzione presenza/performance inVR, non trasferimento automatico aOLED |
+
+Controlli supplementari del coordinatore19ott: JackTrip documentazione; schedaCorning (indice e data); depositoUCL Duffy/Healey. Le altre nuove fonti sono verificate dagli agenti e documentate nelle note; non viene dichiarata una seconda verifica integrale di ogni fonte da parte del coordinatore.

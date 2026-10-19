@@ -8,6 +8,12 @@ Sei incaricato di produrre una pubblicazione italiana completa di ricerca e prog
 
 L'obiettivo è comprendere e sviluppare la forza concettuale del progetto per la città: una forma riconoscibile capace di rendere accessibili pratica musicale, incontro e apprendimento tra pari. Serve una pubblicazione tecnicamente sostanziale, capace di sostenere una discussione con progettisti, musicisti, educatori, amministrazione e cittadini. La scrittura deve essere viva, precisa e autoriale. Non produrre un dépliant promozionale, un elenco generico di tecnologie o un testo che scambi prudenza per pensiero progettuale.
 
+### Centro del progetto: precisazione vincolante dell’autore
+
+La pubblicazione deve partire dalla bellezza dell’incontro aumentato: OLED e camera rendono presente il pianista lontano in una relazione quasi speculare, come una persona con cui incontrarsi attraverso il Portale, anche a 10.000 km. L’ambizione include **suonare contemporaneamente**, oltre a imparare insieme. La **modalità studio** deve poter usare una piattaforma propria o esterna: descrivi percorsi, risorse, esercizi, interazione e continuità della pratica. Questa precisazione appartiene al brief attuale; ricostruisci separatamente ciò che è effettivamente attestato dalla fonte storica.
+
+Non ridurre il Portale a un pianoforte pubblico con uno schermo, a un tutorial o a un servizio di videolezione. Non promettere però che una distanza arbitraria possa avere latenza nulla: distingui presenza audiovisiva, esecuzione contemporanea, coordinazione ritmica stretta e alternanza. Sviluppa il nucleo poetico e le condizioni tecniche che lo rendono sperimentabile: ritardo one-way e round-trip, jitter, buffering, sincronizzazione audio-video, ritorno del suono e modalità musicali compatibili con la rete misurata. Non assegnare alla presenza quasi speculare una qualità automaticamente ottenuta da un comune schermo: progetta inquadratura, scala, sguardo e orientamento per imparare senza confondere le mani. La connessione remota è centrale al concept aggiornato; il nucleo locale conserva continuità quando la rete non permette la modalità scelta.
+
 ### Condizioni assegnate
 
 - Corpus comune: [repository, commit, percorso manifest SHA-256].
@@ -26,7 +32,7 @@ Leggi tutte le fonti essenziali del corpus, compreso il PDF originale. Non imita
 1. Formula una tesi progettuale forte: perché questa relazione tra forma, corpo, musica, apprendimento e città merita di esistere? Quali decisioni la rendono riconoscibile? Quali limiti e rinunce ne preservano il carattere?
 2. Ricostruisci origine, componenti e intenzione del concept, distinguendoli dalle proposte contemporanee. Non attribuire al passato il Padiglione, l'AI o altre scelte prive di riscontro.
 3. Confronta il progetto con precedenti pertinenti e alternative più semplici. Esplicita un contributo distintivo discutibile e verificabile; non dichiarare primati o efficacia dimostrata senza prove.
-4. Sviluppa architettura fisica, elettronica, audio/MIDI, interfaccia, software, contenuti e servizi. Specifica flussi e stati, dipendenze, funzionamento locale, guasti e recupero, manutenzione, requisiti e verifiche. I numeri proposti sono obiettivi o stime, non misure reali. Il ruolo dell'AI, se presente, deve avere utilità, limiti e possibilità di disattivazione comprensibili.
+4. Sviluppa architettura fisica, elettronica, audio/MIDI locale e remoto, OLED/camera, sincronizzazione audiovisiva, interfaccia, software, piattaforma studio e servizi. Distingui obiettivi di presenza e di coordinazione musicale, classi di rete e gestione dei ritardi; non sostituire il problema con una promessa di tempo reale generica. Specifica flussi e stati, dipendenze, funzionamento locale, guasti e recupero, manutenzione, requisiti e verifiche. I numeri proposti sono obiettivi o stime, non misure reali. Il ruolo dell'AI, se presente, deve avere utilità, limiti e possibilità di disattivazione comprensibili.
 5. Progetta attività musicali e apprendimento tra pari: ruoli, facilitazione, contributi riutilizzabili, accesso iniziale e progressione. Distingui collaborazione umana da interazione con un modello. Definisci cosa si osserva per parlare di apprendimento e cosa indica soltanto partecipazione o gradimento.
 6. Studia il rapporto con Parco Caprotti, il Padiglione candidato e gli usi già documentati. Confronta collocazioni e scenari reversibili; considera la qualità dell'esperienza anche per chi non partecipa. Non inventare partnership o disponibilità del luogo.
 7. Tratta accessibilità, cura quotidiana, acustica, sicurezza, tutela del luogo, dati e licenze come scelte progettuali. Se servono verifiche professionali o atti amministrativi, specifica quali decisioni ne dipendono senza dare pareri legali inventati.
@@ -56,6 +62,8 @@ Sei un revisore indipendente della pubblicazione **Il Portale — Peeragogy on M
 **Corpus fonti:** [manifest e commit].  
 **Condizioni:** [ricerca esterna consentita/vietata, budget, strumenti, tempo].  
 **Protocollo:** [commit e percorso REVIEW_PROTOCOL.md].
+
+Applica il brief aggiornato dell’autore riportato nel Prompt A: presenza quasi speculare OLED/camera, pianista remoto anche a 10.000 km, ambizione di esecuzione contemporanea e modalità studio con piattaforma propria/esterna. Valuta la fedeltà a questo nucleo e la distinzione fra simultaneità e coordinazione ritmica. Non attribuire retroattivamente la precisazione a una fonte storica che non la documenta.
 
 Leggi l'intero elaborato, controlla la corrispondenza con i sorgenti quando rilevante e verifica le fonti decisive. Cerca soprattutto errori che cambiano le decisioni: originalità non sostenuta, incoerenze tra promessa e architettura, requisiti non verificabili, numeri senza statuto, risultati o collaborazioni inventati, salti fra partecipazione e apprendimento, fattibilità non argomentata, errori storici e usi del luogo trascurati. Valuta anche se la voce e la struttura permettono di comprendere la bellezza concettuale del progetto. Non scambiare una proposta esplicitamente aperta per una falsa attestazione di realtà.
 

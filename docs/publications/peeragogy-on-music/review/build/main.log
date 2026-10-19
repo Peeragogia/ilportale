@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.10.16)  18 OCT 2026 17:34
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.10.16)  19 OCT 2026 07:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -989,28 +989,28 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.18 
+l.19 
       [1
 
 
-]) (./sections/02_originality.tex [2]
+]) (./sections/02_originality.tex [2] [3]
 \bbl@ensure@italian {Capitolo} 2.
-[3
+[4
 
 ]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 26.
+(Font)              <10> on input line 35.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 26.
+(Font)              <7> on input line 35.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 26.
- [4] [5]) (./sections/03_design.tex [6]
+(Font)              <5> on input line 35.
+ [5]) (./sections/03_design.tex [6]
 \bbl@ensure@italian {Capitolo} 3.
 [7
 
-] [8] [9]
+] [8]
 LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1
-86.
+69.
  (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
@@ -1018,13 +1018,13 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `lmtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-)
+ [9])
 (./sections/04_engineering.tex [10]
 \bbl@ensure@italian {Capitolo} 4.
 [11
 
-] [12{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts
-/enc/dvips/lm/lm-rm.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}] [1
+] [12{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathsy.enc}{/usr/share/texmf/fonts
+/enc/dvips/lm/lm-mathit.enc}{/usr/share/texmf/fonts/enc/dvips/lm/lm-rm.enc}] [1
 3] [14]) (./sections/05_learning.tex [15]
 \bbl@ensure@italian {Capitolo} 5.
 [16
@@ -1033,50 +1033,50 @@ Package microtype Info: Loading generic protrusion settings for font family
 \bbl@ensure@italian {Capitolo} 6.
 [20
 
-]) (./sections/07_delivery.tex [21]
+] [21]) (./sections/07_delivery.tex [22]
 \bbl@ensure@italian {Capitolo} 7.
-[22
+[23
 
-] [23{/usr/share/texmf/fonts/enc/dvips/lm/lm-mathex.enc}])
-(./sections/08_synthesis.tex [24]
+] [24]) (./sections/08_synthesis.tex [25{/usr/share/texmf/fonts/enc/dvips/lm/lm
+-mathex.enc}]
 \bbl@ensure@italian {Capitolo} 8.
-[25
+[26
 
-]) (./sections/09_requirements.tex [26]
+]) (./sections/09_requirements.tex [27]
 \bbl@ensure@italian {Appendice} A.
-[27
+[28
 
-]) (./main.bbl [28] [29
+]) (./main.bbl [29] [30
 
-]) [30] (./main.aux)
+] [31]) [32] (./main.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 71AA930E2C70317C0BDD3516A5DCE1B2;14585.
+(rerunfilecheck)             Checksum: E6794C3D56DC7A76E9E4AB5E04994174;15182.
  ) 
 Here is how much of TeX's memory you used:
- 28012 strings out of 476182
- 518050 string characters out of 5795594
- 1952975 words of memory out of 5000000
- 49180 multiletter control sequences out of 15000+600000
- 640424 words of font info for 187 fonts, out of 8000000 for 9000
+ 28027 strings out of 476182
+ 518397 string characters out of 5795594
+ 1955975 words of memory out of 5000000
+ 49179 multiletter control sequences out of 15000+600000
+ 638274 words of font info for 193 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 84i,13n,87p,1001b,829s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,13n,87p,1001b,827s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf/fonts/type1/public/lm/lmbx10.pfb></usr/share/texmf/fonts/ty
 pe1/public/lm/lmbx12.pfb></usr/share/texmf/fonts/type1/public/lm/lmex10.pfb></u
 sr/share/texmf/fonts/type1/public/lm/lmmi10.pfb></usr/share/texmf/fonts/type1/p
-ublic/lm/lmmi8.pfb></usr/share/texmf/fonts/type1/public/lm/lmr10.pfb></usr/shar
-e/texmf/fonts/type1/public/lm/lmr12.pfb></usr/share/texmf/fonts/type1/public/lm
-/lmr17.pfb></usr/share/texmf/fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/f
-onts/type1/public/lm/lmri10.pfb></usr/share/texmf/fonts/type1/public/lm/lmss10.
-pfb></usr/share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/
-type1/public/lm/lmsy8.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb>
-Output written on main.pdf (34 pages, 550030 bytes).
+ublic/lm/lmmi7.pfb></usr/share/texmf/fonts/type1/public/lm/lmmi8.pfb></usr/shar
+e/texmf/fonts/type1/public/lm/lmr10.pfb></usr/share/texmf/fonts/type1/public/lm
+/lmr12.pfb></usr/share/texmf/fonts/type1/public/lm/lmr17.pfb></usr/share/texmf/
+fonts/type1/public/lm/lmr8.pfb></usr/share/texmf/fonts/type1/public/lm/lmri10.p
+fb></usr/share/texmf/fonts/type1/public/lm/lmss10.pfb></usr/share/texmf/fonts/t
+ype1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb>
+Output written on main.pdf (36 pages, 557128 bytes).
 PDF statistics:
- 649 PDF objects out of 1000 (max. 8388607)
- 576 compressed objects within 6 object streams
- 132 named destinations out of 1000 (max. 500000)
- 46018 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 667 PDF objects out of 1000 (max. 8388607)
+ 593 compressed objects within 6 object streams
+ 135 named destinations out of 1000 (max. 500000)
+ 43970 words of extra memory for PDF output out of 51595 (max. 10000000)
 
